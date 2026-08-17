@@ -1,0 +1,57 @@
+{
+  "city": "Barwaha",
+  "total_stps": 3,
+  "total_capacity_mld": 2.857,
+  "avg_score": 0.8941,
+  "avg_elevation_m": 315.4,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 0.339,
+      "Elevation": 314.4,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8743,
+      "latitude": 22.263839,
+      "longitude": 76.046168,
+      "n_candidates": 60,
+      "ward_name": "Sardar Ballabh Bhai Patel Ward",
+      "ward_no": "01",
+      "area_name": "Sardar Ballabh Bhai Patel Ward, Barwaha",
+      "city": "Barwaha"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 0.915,
+      "Elevation": 316.8,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8765,
+      "latitude": 22.256016,
+      "longitude": 76.035154,
+      "n_candidates": 76,
+      "ward_name": "Lakshmi Bai Ward",
+      "ward_no": "11",
+      "area_name": "Lakshmi Bai Ward, Barwaha",
+      "city": "Barwaha"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 1.603,
+      "Elevation": 315.0,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9316,
+      "latitude": 22.257748,
+      "longitude": 76.041991,
+      "n_candidates": 51,
+      "ward_name": "Nageshwar Ward",
+      "ward_no": "18",
+      "area_name": "Nageshwar Ward, Barwaha",
+      "city": "Barwaha"
+    }
+  ]
+}

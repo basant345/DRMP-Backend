@@ -1,0 +1,57 @@
+{
+  "city": "Dharampuri",
+  "total_stps": 3,
+  "total_capacity_mld": 1.767,
+  "avg_score": 0.9102,
+  "avg_elevation_m": 301.8,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 0.123,
+      "Elevation": 302.6,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9291,
+      "latitude": 22.14456,
+      "longitude": 75.341745,
+      "n_candidates": 126,
+      "ward_name": "Sangam Ward",
+      "ward_no": "01",
+      "area_name": "Sangam Ward, Dharampuri",
+      "city": "Dharampuri"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 1.424,
+      "Elevation": 300.9,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8983,
+      "latitude": 22.149568,
+      "longitude": 75.34733,
+      "n_candidates": 148,
+      "ward_name": "Narmada Ward",
+      "ward_no": "08",
+      "area_name": "Narmada Ward, Dharampuri",
+      "city": "Dharampuri"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 0.22,
+      "Elevation": 301.9,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9033,
+      "latitude": 22.158995,
+      "longitude": 75.364283,
+      "n_candidates": 279,
+      "ward_name": "Dr.Ambedkar Ward",
+      "ward_no": "06",
+      "area_name": "Dr.Ambedkar Ward, Dharampuri",
+      "city": "Dharampuri"
+    }
+  ]
+}

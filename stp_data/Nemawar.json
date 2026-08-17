@@ -1,0 +1,57 @@
+{
+  "city": "Nemawar",
+  "total_stps": 3,
+  "total_capacity_mld": 0.0,
+  "avg_score": 0.9305,
+  "avg_elevation_m": 334.3,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 0.0,
+      "Elevation": 335.2,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8789,
+      "latitude": 22.505054,
+      "longitude": 76.97769,
+      "n_candidates": 181,
+      "ward_name": "Sant Ravidas Ward",
+      "ward_no": "01",
+      "area_name": "Sant Ravidas Ward, Nemawar",
+      "city": "Nemawar"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 0.0,
+      "Elevation": 334.4,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.956,
+      "latitude": 22.497804,
+      "longitude": 76.983414,
+      "n_candidates": 64,
+      "ward_name": "Dr.Ambedkar Ward",
+      "ward_no": "13",
+      "area_name": "Dr.Ambedkar Ward, Nemawar",
+      "city": "Nemawar"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 0.0,
+      "Elevation": 333.2,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9565,
+      "latitude": 22.498594,
+      "longitude": 76.998347,
+      "n_candidates": 159,
+      "ward_name": "Sant Shri Aatmaram Baba Ward",
+      "ward_no": "12",
+      "area_name": "Sant Shri Aatmaram Baba Ward, Nemawar",
+      "city": "Nemawar"
+    }
+  ]
+}

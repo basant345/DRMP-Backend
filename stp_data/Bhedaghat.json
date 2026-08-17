@@ -1,0 +1,57 @@
+{
+  "city": "Bhedaghat",
+  "total_stps": 3,
+  "total_capacity_mld": 0.719,
+  "avg_score": 0.9364,
+  "avg_elevation_m": 388.4,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 0.253,
+      "Elevation": 388.0,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9583,
+      "latitude": 23.112716,
+      "longitude": 79.826942,
+      "n_candidates": 136,
+      "ward_name": "Tripur Sundari Ward",
+      "ward_no": "15",
+      "area_name": "Tripur Sundari Ward, Bhedaghat",
+      "city": "Bhedaghat"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 0.121,
+      "Elevation": 389.4,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8976,
+      "latitude": 23.123296,
+      "longitude": 79.819305,
+      "n_candidates": 193,
+      "ward_name": "Rani Durgawati Ward",
+      "ward_no": "09",
+      "area_name": "Rani Durgawati Ward, Bhedaghat",
+      "city": "Bhedaghat"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 0.345,
+      "Elevation": 387.8,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9532,
+      "latitude": 23.130573,
+      "longitude": 79.799508,
+      "n_candidates": 115,
+      "ward_name": "Ram Manohar Lohia Ward",
+      "ward_no": "06",
+      "area_name": "Ram Manohar Lohia Ward, Bhedaghat",
+      "city": "Bhedaghat"
+    }
+  ]
+}

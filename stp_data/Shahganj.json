@@ -1,0 +1,57 @@
+{
+  "city": "Shahganj",
+  "total_stps": 3,
+  "total_capacity_mld": 0.0,
+  "avg_score": 0.9135,
+  "avg_elevation_m": 352.7,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 0.0,
+      "Elevation": 352.0,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9617,
+      "latitude": 22.842705,
+      "longitude": 77.791616,
+      "n_candidates": 100,
+      "ward_name": "Pandit Deendayal Upadhyay Ward",
+      "ward_no": "14",
+      "area_name": "Pandit Deendayal Upadhyay Ward, Shahganj",
+      "city": "Shahganj"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 0.0,
+      "Elevation": 353.1,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8551,
+      "latitude": 22.8557,
+      "longitude": 77.784615,
+      "n_candidates": 126,
+      "ward_name": "Mahatama Gandhi Ward",
+      "ward_no": "01",
+      "area_name": "Mahatama Gandhi Ward, Shahganj",
+      "city": "Shahganj"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 0.0,
+      "Elevation": 353.0,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9236,
+      "latitude": 22.833574,
+      "longitude": 77.773314,
+      "n_candidates": 334,
+      "ward_name": "Rani Durgawati Ward",
+      "ward_no": "15",
+      "area_name": "Rani Durgawati Ward, Shahganj",
+      "city": "Shahganj"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+DRMP deployment dataset  -  trimmed vectors + compressed DEM
+============================================================
+Drop-in replacement for drmp_app/data. 826 MB -> 139 MB on disk.
+Every file the backend opens is present. No information removed.
+
+RASTER
+  Narmada_DEM_Clipped.tif        582 MB -> 72 MB   (8.1x smaller)
+    Cloud Optimized GeoTIFF, DEFLATE + horizontal predictor, 512x512 tiles,
+    internal overview pyramid (2,4,8,16,32,64,128).
+    LOSSLESS. Verified pixel-exact against the original across all
+    34283 x 8894 pixels, stripe by stripe.
+      size      34283 x 8894      unchanged
+      dtype     int16             unchanged
+      crs       EPSG:4326         unchanged
+      transform identical         unchanged
+      bounds    72.532457, 21.383451, 81.771540, 23.780336   unchanged
+      nodata    None              unchanged
+      range     -15 to 1333       unchanged
+    Filename kept identical so config.py needs no edit.
+
+VECTORS  (7 shapefiles, each with .shp .shx .dbf .prj .cpg)
+  Stream&drain                             28 features,  4 fields
+  Final_Narmada/Merged_Layers_02_07      1039 features, 17 fields
+  sewer/sewer_network                   46444 features, 26 fields
+  ulbs/mpulb                               22 features, 19 fields
+  ward/mpward                             469 features, 36 fields
+  ward/wards_sewage                       469 features, 40 fields
+  Jabalpur_DRMP/Proposed_STP_Locations     10 features,  5 fields
+  Jabalpur_DRMP/STP_Summary.csv
+  Feature counts, field lists and bounding boxes verified identical
+  to the originals. No attribute column dropped.
+
+REMOVED  (no information loss)
+  *.sbn, *.sbx     ESRI spatial index, regenerable, GDAL never reads them
+  *.shp.xml        ArcGIS metadata sidecars
+  *.qmd            QGIS metadata sidecars
+  desktop.ini      Windows folder junk
+  Jabalpur_DRMP/*  141 MB of raw survey input (sewer, water supply, storm
+                   water, manholes, IPS, WTP, OHT, confluence points, stream
+                   network, 20-zone wards, PNG map exports). Not referenced
+                   by config.py. Keep your original zip if you plan to
+                   re-run generate_all_stps.py.
+
+ONE BEHAVIOUR CHANGE
+  /api/dem/info reads a downsampled overview instead of averaging full
+  resolution, so its summary shifts slightly:
+      mean   157.2753 -> 157.2809   (+0.006 m)
+      std    231.6991 -> 231.3474
+      min/max smoothed by overview averaging
+  Point elevation (/api/dem/sample), profiles and tiles read full-resolution
+  pixels and are completely unaffected.
+  To make /api/dem/info byte-identical too, rebuild with OVERVIEWS='NONE'.
+
+ALL 22 ULBs PRESENT
+  Amarkantak, Barwaha, Barwani, Bhedaghat, Budni, Dahi, Dhamnod, Dharampuri,
+  Dindori, Harsud, Jabalpur, Kasrawad, Khandwa, Maheshwar, Mandla,
+  Mandleshwar, Narmadapuram, Nasrullaganj, Nemawar, Omkareshwar, Punasa,
+  Shahganj
+
+INSTALL
+  Replace drmp_app/data with the data folder in this archive.
+  Set DATA_DIR to the absolute path of .../data/DRMP/Input
+  Verify at /api/layers/available  ->  all 7 entries "exists": true
+
+STILL TO DO IN CODE
+  Empty-GeoDataFrame guard in utils/gis_loader.py safe_area_km2 and
+  safe_length_km. Without it /api/layers/streams and /api/layers/drains
+  return 500 for the 20 cities that have no Stream&drain coverage.

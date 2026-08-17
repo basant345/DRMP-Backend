@@ -1,0 +1,57 @@
+{
+  "city": "Mandleshwar",
+  "total_stps": 3,
+  "total_capacity_mld": 1.333,
+  "avg_score": 0.9123,
+  "avg_elevation_m": 308.0,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 0.6,
+      "Elevation": 310.9,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8449,
+      "latitude": 22.177816,
+      "longitude": 75.665526,
+      "n_candidates": 53,
+      "ward_name": "Chandra Shekhar Azad Ward",
+      "ward_no": "13",
+      "area_name": "Chandra Shekhar Azad Ward, Mandleshwar",
+      "city": "Mandleshwar"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 0.363,
+      "Elevation": 307.3,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9405,
+      "latitude": 22.173707,
+      "longitude": 75.663841,
+      "n_candidates": 26,
+      "ward_name": "Indira Gandhi Ward",
+      "ward_no": "09",
+      "area_name": "Indira Gandhi Ward, Mandleshwar",
+      "city": "Mandleshwar"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 0.37,
+      "Elevation": 305.9,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9516,
+      "latitude": 22.174886,
+      "longitude": 75.659433,
+      "n_candidates": 35,
+      "ward_name": "Mahatama Gandhi Ward",
+      "ward_no": "04",
+      "area_name": "Mahatama Gandhi Ward, Mandleshwar",
+      "city": "Mandleshwar"
+    }
+  ]
+}

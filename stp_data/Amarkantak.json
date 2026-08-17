@@ -1,0 +1,57 @@
+{
+  "city": "Amarkantak",
+  "total_stps": 3,
+  "total_capacity_mld": 0.909,
+  "avg_score": 0.9432,
+  "avg_elevation_m": 408.2,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 0.537,
+      "Elevation": 407.9,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.955,
+      "latitude": 22.671498,
+      "longitude": 81.743297,
+      "n_candidates": 753,
+      "ward_name": "Kapila sangam Ward",
+      "ward_no": "08",
+      "area_name": "Kapila sangam Ward, Amarkantak",
+      "city": "Amarkantak"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 0.335,
+      "Elevation": 408.4,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9258,
+      "latitude": 22.711502,
+      "longitude": 81.705621,
+      "n_candidates": 1435,
+      "ward_name": "Gummaghati Ward",
+      "ward_no": "06",
+      "area_name": "Gummaghati Ward, Amarkantak",
+      "city": "Amarkantak"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 0.037,
+      "Elevation": 408.3,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9488,
+      "latitude": 22.752515,
+      "longitude": 81.709061,
+      "n_candidates": 2877,
+      "ward_name": "Jaleshwar Ward",
+      "ward_no": "01",
+      "area_name": "Jaleshwar Ward, Amarkantak",
+      "city": "Amarkantak"
+    }
+  ]
+}

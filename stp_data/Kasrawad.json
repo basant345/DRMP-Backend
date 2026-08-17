@@ -1,0 +1,57 @@
+{
+  "city": "Kasrawad",
+  "total_stps": 3,
+  "total_capacity_mld": 2.456,
+  "avg_score": 0.9053,
+  "avg_elevation_m": 305.5,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 1.153,
+      "Elevation": 306.3,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.938,
+      "latitude": 22.131026,
+      "longitude": 75.617378,
+      "n_candidates": 83,
+      "ward_name": "Devi Ahilya Bai Ward",
+      "ward_no": "13",
+      "area_name": "Devi Ahilya Bai Ward, Kasrawad",
+      "city": "Kasrawad"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 0.886,
+      "Elevation": 304.1,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9057,
+      "latitude": 22.117796,
+      "longitude": 75.612875,
+      "n_candidates": 293,
+      "ward_name": "Sardar Ballabh Bhai Patel Ward",
+      "ward_no": "06",
+      "area_name": "Sardar Ballabh Bhai Patel Ward, Kasrawad",
+      "city": "Kasrawad"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 0.417,
+      "Elevation": 306.2,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8721,
+      "latitude": 22.122045,
+      "longitude": 75.624414,
+      "n_candidates": 89,
+      "ward_name": "Mahatama Gandhi Ward",
+      "ward_no": "01",
+      "area_name": "Mahatama Gandhi Ward, Kasrawad",
+      "city": "Kasrawad"
+    }
+  ]
+}

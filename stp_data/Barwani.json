@@ -1,0 +1,73 @@
+{
+  "city": "Barwani",
+  "total_stps": 4,
+  "total_capacity_mld": 5.995,
+  "avg_score": 0.9167,
+  "avg_elevation_m": 292.6,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 2.783,
+      "Elevation": 293.4,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9319,
+      "latitude": 22.02638,
+      "longitude": 74.903266,
+      "n_candidates": 169,
+      "ward_name": "Raidas Ward",
+      "ward_no": "12",
+      "area_name": "Raidas Ward, Barwani",
+      "city": "Barwani"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 1.048,
+      "Elevation": 292.6,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9444,
+      "latitude": 22.029657,
+      "longitude": 74.924793,
+      "n_candidates": 293,
+      "ward_name": "Segaon Ward",
+      "ward_no": "10",
+      "area_name": "Segaon Ward, Barwani",
+      "city": "Barwani"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 1.387,
+      "Elevation": 292.4,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8644,
+      "latitude": 22.042647,
+      "longitude": 74.911549,
+      "n_candidates": 195,
+      "ward_name": "Ashagram Ward",
+      "ward_no": "03",
+      "area_name": "Ashagram Ward, Barwani",
+      "city": "Barwani"
+    },
+    {
+      "stp_id": "STP-4",
+      "cluster": 3,
+      "Capacity_MLD": 0.777,
+      "Elevation": 292.0,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.926,
+      "latitude": 22.040726,
+      "longitude": 74.896846,
+      "n_candidates": 249,
+      "ward_name": "Tulsidas Ward",
+      "ward_no": "22",
+      "area_name": "Tulsidas Ward, Barwani",
+      "city": "Barwani"
+    }
+  ]
+}

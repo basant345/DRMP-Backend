@@ -1,0 +1,57 @@
+{
+  "city": "Punasa",
+  "total_stps": 3,
+  "total_capacity_mld": 0.0,
+  "avg_score": 0.9144,
+  "avg_elevation_m": 319.4,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 0.0,
+      "Elevation": 321.0,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9145,
+      "latitude": 22.241803,
+      "longitude": 76.407411,
+      "n_candidates": 448,
+      "ward_name": "Sardar Ballabh Bhai Patel Ward",
+      "ward_no": "12",
+      "area_name": "Sardar Ballabh Bhai Patel Ward, Punasa",
+      "city": "Punasa"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 0.0,
+      "Elevation": 317.8,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8856,
+      "latitude": 22.229231,
+      "longitude": 76.374728,
+      "n_candidates": 251,
+      "ward_name": "Kalsan Mata Ward",
+      "ward_no": "06",
+      "area_name": "Kalsan Mata Ward, Punasa",
+      "city": "Punasa"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 0.0,
+      "Elevation": 319.3,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.943,
+      "latitude": 22.25464,
+      "longitude": 76.412972,
+      "n_candidates": 721,
+      "ward_name": "Dr Bheemrao Ambedkar Ward",
+      "ward_no": "03",
+      "area_name": "Dr Bheemrao Ambedkar Ward, Punasa",
+      "city": "Punasa"
+    }
+  ]
+}

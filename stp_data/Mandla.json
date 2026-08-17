@@ -1,0 +1,73 @@
+{
+  "city": "Mandla",
+  "total_stps": 4,
+  "total_capacity_mld": 5.342,
+  "avg_score": 0.9113,
+  "avg_elevation_m": 386.9,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 1.577,
+      "Elevation": 388.1,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.89,
+      "latitude": 22.605724,
+      "longitude": 80.362997,
+      "n_candidates": 144,
+      "ward_name": "Jawahar Ward",
+      "ward_no": "19",
+      "area_name": "Jawahar Ward, Mandla",
+      "city": "Mandla"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 1.412,
+      "Elevation": 386.0,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9534,
+      "latitude": 22.600394,
+      "longitude": 80.372433,
+      "n_candidates": 50,
+      "ward_name": "Sardar Bhagat Singh Ward",
+      "ward_no": "13",
+      "area_name": "Sardar Bhagat Singh Ward, Mandla",
+      "city": "Mandla"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 1.302,
+      "Elevation": 386.7,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.865,
+      "latitude": 22.595519,
+      "longitude": 80.368598,
+      "n_candidates": 43,
+      "ward_name": "Azad Ward",
+      "ward_no": "07",
+      "area_name": "Azad Ward, Mandla",
+      "city": "Mandla"
+    },
+    {
+      "stp_id": "STP-4",
+      "cluster": 3,
+      "Capacity_MLD": 1.051,
+      "Elevation": 386.6,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9368,
+      "latitude": 22.590235,
+      "longitude": 80.349715,
+      "n_candidates": 248,
+      "ward_name": "Dada  Dhani Ram Ward",
+      "ward_no": "24",
+      "area_name": "Dada  Dhani Ram Ward, Mandla",
+      "city": "Mandla"
+    }
+  ]
+}

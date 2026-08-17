@@ -1,0 +1,57 @@
+{
+  "city": "Budni",
+  "total_stps": 3,
+  "total_capacity_mld": 1.815,
+  "avg_score": 0.9328,
+  "avg_elevation_m": 350.2,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 0.214,
+      "Elevation": 349.3,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9547,
+      "latitude": 22.769727,
+      "longitude": 77.708489,
+      "n_candidates": 704,
+      "ward_name": "Ambedkar Ward",
+      "ward_no": "15",
+      "area_name": "Ambedkar Ward, Budni",
+      "city": "Budni"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 0.527,
+      "Elevation": 352.6,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8914,
+      "latitude": 22.770098,
+      "longitude": 77.698246,
+      "n_candidates": 575,
+      "ward_name": "Narmada Ward",
+      "ward_no": "10",
+      "area_name": "Narmada Ward, Budni",
+      "city": "Budni"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 1.074,
+      "Elevation": 348.6,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9524,
+      "latitude": 22.778706,
+      "longitude": 77.697105,
+      "n_candidates": 690,
+      "ward_name": "Pt. Ravishankar Shukla Ward",
+      "ward_no": "07",
+      "area_name": "Pt. Ravishankar Shukla Ward, Budni",
+      "city": "Budni"
+    }
+  ]
+}

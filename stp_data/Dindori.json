@@ -1,0 +1,57 @@
+{
+  "city": "Dindori",
+  "total_stps": 3,
+  "total_capacity_mld": 2.303,
+  "avg_score": 0.9122,
+  "avg_elevation_m": 403.2,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 0.681,
+      "Elevation": 403.0,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9584,
+      "latitude": 22.933466,
+      "longitude": 81.066169,
+      "n_candidates": 427,
+      "ward_name": "Subhash Ward",
+      "ward_no": "11",
+      "area_name": "Subhash Ward, Dindori",
+      "city": "Dindori"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 0.735,
+      "Elevation": 402.8,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8941,
+      "latitude": 22.960629,
+      "longitude": 81.060931,
+      "n_candidates": 362,
+      "ward_name": "Imlikuti Ward",
+      "ward_no": "01",
+      "area_name": "Imlikuti Ward, Dindori",
+      "city": "Dindori"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 0.887,
+      "Elevation": 403.7,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.884,
+      "latitude": 22.936443,
+      "longitude": 81.076362,
+      "n_candidates": 127,
+      "ward_name": "Maulana Azad Ward",
+      "ward_no": "06",
+      "area_name": "Maulana Azad Ward, Dindori",
+      "city": "Dindori"
+    }
+  ]
+}

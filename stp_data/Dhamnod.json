@@ -1,0 +1,57 @@
+{
+  "city": "Dhamnod",
+  "total_stps": 3,
+  "total_capacity_mld": 3.466,
+  "avg_score": 0.9018,
+  "avg_elevation_m": 305.5,
+  "stps": [
+    {
+      "stp_id": "STP-1",
+      "cluster": 0,
+      "Capacity_MLD": 0.659,
+      "Elevation": 306.0,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.917,
+      "latitude": 22.211284,
+      "longitude": 75.489295,
+      "n_candidates": 461,
+      "ward_name": "Sardar Patel Ward",
+      "ward_no": "14",
+      "area_name": "Sardar Patel Ward, Dhamnod",
+      "city": "Dhamnod"
+    },
+    {
+      "stp_id": "STP-2",
+      "cluster": 1,
+      "Capacity_MLD": 1.829,
+      "Elevation": 304.6,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.9065,
+      "latitude": 22.218779,
+      "longitude": 75.498709,
+      "n_candidates": 454,
+      "ward_name": "Chandra Shekhar Azad Ward",
+      "ward_no": "06",
+      "area_name": "Chandra Shekhar Azad Ward, Dhamnod",
+      "city": "Dhamnod"
+    },
+    {
+      "stp_id": "STP-3",
+      "cluster": 2,
+      "Capacity_MLD": 0.978,
+      "Elevation": 306.0,
+      "FloodScore": 0.7,
+      "FloodClass": "Low",
+      "Score": 0.8818,
+      "latitude": 22.222487,
+      "longitude": 75.474672,
+      "n_candidates": 157,
+      "ward_name": "Veer Savarkar Ward",
+      "ward_no": "03",
+      "area_name": "Veer Savarkar Ward, Dhamnod",
+      "city": "Dhamnod"
+    }
+  ]
+}
