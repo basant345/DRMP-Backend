@@ -1,0 +1,23 @@
+ULB,Status,Elev,Flood,Sewer,Stream,Drain,Wind,Criteria_Available,Notes
+Amarkantak,OK,True,False,False,True,False,True,3,flood: no risk map for this ULB; sewer: no features for this ULB; drain: none within 2 km of ULB
+Barwaha,OK,True,False,False,True,False,True,3,flood: no risk map for this ULB; sewer: no features for this ULB; drain: none within 2 km of ULB
+Barwani,OK,True,False,False,False,False,True,2,flood: no risk map for this ULB; sewer: no features for this ULB; stream: none within 2 km of ULB; drain: none within 2 km of ULB
+Bhedaghat,OK,True,False,True,True,False,True,4,flood: no risk map for this ULB; drain: none within 2 km of ULB
+Budni,OK,True,False,False,True,True,True,4,flood: no risk map for this ULB; sewer: no features for this ULB
+Dahi,OK,True,False,False,False,False,True,2,flood: no risk map for this ULB; sewer: no features for this ULB; stream: none within 2 km of ULB; drain: none within 2 km of ULB
+Dhamnod,OK,True,False,False,True,False,True,3,flood: no risk map for this ULB; sewer: no features for this ULB; drain: none within 2 km of ULB
+Dharampuri,OK,True,False,True,True,False,True,4,flood: no risk map for this ULB; drain: none within 2 km of ULB
+Dindori,OK,True,False,False,True,False,True,3,flood: no risk map for this ULB; sewer: no features for this ULB; drain: none within 2 km of ULB
+Harsud,OK,True,False,False,True,False,True,3,flood: no risk map for this ULB; sewer: no features for this ULB; drain: none within 2 km of ULB
+Jabalpur,OK,True,False,True,True,False,True,4,flood: no risk map for this ULB; drain: none within 2 km of ULB
+Kasrawad,OK,True,False,False,False,False,True,2,flood: no risk map for this ULB; sewer: no features for this ULB; stream: none within 2 km of ULB; drain: none within 2 km of ULB
+Khandwa,OK,True,False,True,True,False,True,4,flood: no risk map for this ULB; drain: none within 2 km of ULB
+Maheshwar,OK,True,False,False,True,False,True,3,flood: no risk map for this ULB; sewer: no features for this ULB; drain: none within 2 km of ULB
+Mandla,OK,True,False,False,True,False,True,3,flood: no risk map for this ULB; sewer: no features for this ULB; drain: none within 2 km of ULB
+Mandleshwar,OK,True,False,False,True,False,True,3,flood: no risk map for this ULB; sewer: no features for this ULB; drain: none within 2 km of ULB
+Narmadapuram,OK,True,True,True,True,True,True,6,flood partial (24/33 wards)
+Nasrullaganj,OK,True,False,True,True,False,True,4,flood: no risk map for this ULB; drain: none within 2 km of ULB
+Nemawar,OK,True,False,True,True,False,True,4,flood: no risk map for this ULB; drain: none within 2 km of ULB
+Omkareshwar,OK,True,False,True,True,False,True,4,flood: no risk map for this ULB; drain: none within 2 km of ULB
+Punasa,OK,True,False,False,True,False,True,3,flood: no risk map for this ULB; sewer: no features for this ULB; drain: none within 2 km of ULB
+Shahganj,OK,True,False,False,True,False,True,3,flood: no risk map for this ULB; sewer: no features for this ULB; drain: none within 2 km of ULB
