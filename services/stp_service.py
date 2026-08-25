@@ -86,3 +86,125 @@ def get_stp_table(city: str) -> List[Dict[str, Any]]:
 def list_cities_with_stp() -> List[str]:
     """Return list of city names that have generated STP JSON files."""
     return [p.stem for p in STP_DATA_DIR.glob("*.json") if p.stem != "_summary"]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# "Suggest N STPs" — user-entered-count feature.
+#
+# This does NOT touch the existing per-cluster STP methodology above in any
+# way: load_stp_data / get_stp_geojson / get_stp_summary / get_stp_table are
+# unchanged, and the primary "Proposed STPs" layer the app already shows is
+# untouched by anything below.
+#
+# What this adds: a SEPARATE, pre-generated, already-ranked pool of
+# candidate sites per city (stp_data/<City>_candidates.json), produced by
+# generate_stp_candidates.py using the EXACT SAME weights and scoring
+# formula as the existing pipeline (elev/flood/sewer/stream/drain/wind).
+# The only new step beyond that existing formula is a minimum-spacing rule
+# applied when building the ranked pool, so that "top N" are N genuinely
+# distinct sites rather than N points a few metres apart. It does not
+# change any score, weight, or existing STP location.
+#
+# At request time this is just a cached JSON read + slice — no live
+# geoprocessing — which keeps it safe and fast on a memory-constrained
+# instance, the same design already used for the existing STP data.
+# ─────────────────────────────────────────────────────────────────────────────
+
+CANDIDATES_DIR = Path(__file__).parent.parent / "stp_data" / "candidates"
+
+
+@lru_cache(maxsize=32)
+def load_stp_candidates(city: str) -> Optional[Dict[str, Any]]:
+    """Load the pre-generated, already-ranked candidate pool for a city."""
+    json_path = CANDIDATES_DIR / f"{city}_candidates.json"
+    if json_path.exists():
+        with open(json_path) as f:
+            return json.load(f)
+    logger.warning("No STP candidate pool found for city: %s (expected: %s)", city, json_path)
+    return None
+
+
+def get_stp_candidate_count(city: str) -> int:
+    """Number of valid, well-spaced candidate sites available for a city."""
+    data = load_stp_candidates(city)
+    if not data:
+        return 0
+    return int(data.get("available_candidates", len(data.get("candidates", []))))
+
+
+def suggest_top_n_stps(city: str, n: int) -> Dict[str, Any]:
+    """
+    Return the top-N ranked candidate sites for a city as a result dict:
+
+        {"status": "ok", "city", "requested", "available", "data": <GeoJSON>}
+        {"status": "error", "reason": "no_data" | "invalid_count" | "count_too_high",
+         "message": <human-readable>, "available": <int>}
+
+    Ranking, weights and scoring are entirely inherited from
+    generate_stp_candidates.py — this function only validates and slices.
+    """
+    data = load_stp_candidates(city)
+    if not data or not data.get("candidates"):
+        return {
+            "status": "error", "reason": "no_data", "available": 0,
+            "message": f"No suitable STP locations are available for {city}.",
+        }
+
+    candidates = data["candidates"]
+    available = len(candidates)
+
+    if not isinstance(n, int) or n <= 0:
+        return {
+            "status": "error", "reason": "invalid_count", "available": available,
+            "message": "Number of STPs must be a positive whole number.",
+        }
+
+    if n > available:
+        return {
+            "status": "error", "reason": "count_too_high", "available": available,
+            "message": (
+                f"Only {available} suitable location{'s' if available != 1 else ''} "
+                f"available for {city}. Please enter a number up to {available}."
+            ),
+        }
+
+    top_n = candidates[:n]  # already sorted by Score, descending, at generation time
+    features = []
+    for c in top_n:
+        features.append({
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [c["longitude"], c["latitude"]],
+            },
+            "properties": {
+                "stp_id":       f"CAND-{c['rank']}",
+                "rank":         c["rank"],
+                "cluster":      None,
+                "Capacity_MLD": None,
+                "Elevation":    c["Elevation"],
+                "FloodScore":   c["FloodScore"],
+                "FloodClass":   c.get("FloodClass", "—"),
+                "SewerScore":   c.get("SewerScore"),
+                "StreamScore":  c.get("StreamScore"),
+                "DrainScore":   c.get("DrainScore"),
+                "WindScore":    c.get("WindScore"),
+                "Score":        c["Score"],
+                "latitude":     c["latitude"],
+                "longitude":    c["longitude"],
+                "ward_name":    c.get("ward_name", ""),
+                "ward_no":      c.get("ward_no", ""),
+                "area_name":    c.get("area_name", city),
+                "city":         c.get("city", city),
+                "n_candidates": available,
+            },
+        })
+
+    return {
+        "status": "ok",
+        "city": city,
+        "requested": n,
+        "available": available,
+        "data": {"type": "FeatureCollection", "features": features},
+    }
+
