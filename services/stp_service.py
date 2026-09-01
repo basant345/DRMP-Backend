@@ -91,23 +91,21 @@ def list_cities_with_stp() -> List[str]:
 # ─────────────────────────────────────────────────────────────────────────────
 # "Suggest N STPs" — user-entered-count feature.
 #
-# This does NOT touch the existing per-cluster STP methodology above in any
-# way: load_stp_data / get_stp_geojson / get_stp_summary / get_stp_table are
-# unchanged, and the primary "Proposed STPs" layer the app already shows is
-# untouched by anything below.
+# This does NOT touch the existing per-cluster STP methodology above:
+# load_stp_data / get_stp_geojson / get_stp_summary / get_stp_table are
+# unchanged.
 #
-# What this adds: a SEPARATE, pre-generated, already-ranked pool of
-# candidate sites per city (stp_data/<City>_candidates.json), produced by
-# generate_stp_candidates.py using the EXACT SAME weights and scoring
-# formula as the existing pipeline (elev/flood/sewer/stream/drain/wind).
-# The only new step beyond that existing formula is a minimum-spacing rule
-# applied when building the ranked pool, so that "top N" are N genuinely
-# distinct sites rather than N points a few metres apart. It does not
-# change any score, weight, or existing STP location.
+# A separate, pre-generated, already-ranked pool of candidate sites per
+# city (stp_data/<City>_candidates.json) is produced offline by
+# generate_stp_candidates.py, using the SAME weights and scoring formula as
+# the existing pipeline (elev/flood/sewer/stream/drain/wind). The only
+# addition beyond that existing formula is a minimum-spacing rule applied
+# when building the ranked pool, so "top N" are N genuinely distinct sites.
+# It does not change any score, weight, or existing STP location.
 #
-# At request time this is just a cached JSON read + slice — no live
-# geoprocessing — which keeps it safe and fast on a memory-constrained
-# instance, the same design already used for the existing STP data.
+# At request time this is a cached JSON read + slice — no live
+# geoprocessing — which keeps it fast and safe on a memory-constrained
+# instance.
 # ─────────────────────────────────────────────────────────────────────────────
 
 CANDIDATES_DIR = Path(__file__).parent.parent / "stp_data" / "candidates"
@@ -142,6 +140,10 @@ def suggest_top_n_stps(city: str, n: int) -> Dict[str, Any]:
 
     Ranking, weights and scoring are entirely inherited from
     generate_stp_candidates.py — this function only validates and slices.
+
+    Each returned feature is labelled "STP 1", "STP 2", ... in suitability
+    rank order (best first), rather than a numeric candidate id, so the map
+    marker/popup reads the same way as the original per-cluster STPs did.
     """
     data = load_stp_candidates(city)
     if not data or not data.get("candidates"):
@@ -178,7 +180,7 @@ def suggest_top_n_stps(city: str, n: int) -> Dict[str, Any]:
                 "coordinates": [c["longitude"], c["latitude"]],
             },
             "properties": {
-                "stp_id":       f"CAND-{c['rank']}",
+                "stp_id":       f"STP {c['rank']}",
                 "rank":         c["rank"],
                 "cluster":      None,
                 "Capacity_MLD": None,

@@ -70,7 +70,7 @@ def suggest_stps_for_city(city):
     User-driven "Suggest N STPs" feature.
 
     Query param: count (positive integer, required).
-    Ranks and weights are entirely inherited from the existing suitability
+    Ranking and weights are entirely inherited from the existing suitability
     methodology (see services/stp_service.py) — this route only validates
     the requested count and returns the top N pre-ranked candidates for the
     selected city, restricted to that city's boundary by construction.
@@ -102,8 +102,6 @@ def suggest_stps_for_city(city):
         return jsonify({"error": str(e)}), 500
 
     if result["status"] == "error":
-        # count_too_high / invalid_count / no_data are all user-facing,
-        # expected validation outcomes, not server errors.
         return jsonify(result), 400
 
     return jsonify(result)
