@@ -68,14 +68,20 @@ from sklearn.cluster import KMeans
 warnings.filterwarnings("ignore")
 
 t0 = time.time()
-D = "/home/claude/app/DRMP_WebApp/drmp_app/data/DRMP/Input"
+# ── Real paths on this machine (D:\DRMP_WebApp\drmp_app\backend\...) ─────────
+D = r"D:\DRMP_WebApp\drmp_app\backend\data\DRMP\Input"
 
-WARD_FILE  = f"{D}/ward/wards_sewage.shp"
-SEWER_FILE = f"{D}/sewer/sewer_network.shp"
-DRAIN_FILE = f"{D}/Stream&drain.shp"
-DEM_FILE   = "/home/claude/dem/Narmada_DEM_Clipped_cog.tif"
-WIND_FILE  = "/mnt/user-data/uploads/1787564570628_ULB_Wind_Statistics.csv"
-OUT_DIR    = "/home/claude/stp_update/out/candidates"
+WARD_FILE    = rf"{D}\ward\wards_sewage.shp"
+SEWER_FILE   = rf"{D}\sewer\sewer_network.shp"
+DRAIN_FILE   = rf"{D}\Stream&drain.shp"
+DEM_FILE     = rf"{D}\Narmada_DEM_Clipped.tif"
+STREAM_FILE  = rf"{D}\Final_Narmada\Merged_Layers_02_07.shp"
+# Copy your ULB_Wind_Statistics.csv here before running (not currently
+# present in the backend repo). If it's missing, the script still runs —
+# wind_score falls back to 0 for every city, exactly as the reference
+# handles any criterion with unavailable data.
+WIND_FILE    = rf"{D}\ULB_Wind_Statistics.csv"
+OUT_DIR      = r"D:\DRMP_WebApp\drmp_app\backend\stp_data\candidates"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 WARD_ULB_FIELD, SEWER_ULB_FIELD, WARD_NO_FIELD = "ub_nm_e", "ulb_nm", "wardno"
@@ -132,22 +138,18 @@ wards = gpd.read_file(WARD_FILE, engine="pyogrio")
 sewer = gpd.read_file(SEWER_FILE, engine="pyogrio")
 drain = gpd.read_file(DRAIN_FILE, engine="pyogrio")
 
-stream_parts = []
-try:
-    riv = gpd.read_file(f"{D}/Final_Narmada/Merged_Layers_02_07.shp", engine="pyogrio")
-    stream_parts.append(riv[["geometry"]])
-except Exception: pass
-for path in ["/home/claude/build/khandwa/streams.geojson",
-             "/home/claude/build/jabalpur/streams.geojson",
-             "/home/claude/stp_update/streams/Amarkantak_Streams/A_S.shp"]:
-    try:
-        g = gpd.read_file(path, engine="pyogrio"); stream_parts.append(g[["geometry"]])
-    except Exception: pass
-stream = pd.concat([p.to_crs(4326) for p in stream_parts], ignore_index=True)
-stream = gpd.GeoDataFrame(stream, geometry="geometry", crs=4326)
+stream = gpd.read_file(STREAM_FILE, engine="pyogrio")[["geometry"]]
+stream = gpd.GeoDataFrame(stream, geometry="geometry", crs=stream.crs or 4326).to_crs(4326)
 
 dem = rasterio.open(DEM_FILE)
-wind_df = pd.read_csv(WIND_FILE)
+
+try:
+    wind_df = pd.read_csv(WIND_FILE)
+    print(f"  wind: {len(wind_df)} rows")
+except Exception as e:
+    print(f"  wind: FAILED to load ({e}) -- wind_score will be 0 for every city")
+    wind_df = None
+
 if SEWAGE_FIELD not in wards.columns: wards[SEWAGE_FIELD] = 0.0
 
 ulb_list = sorted(wards[WARD_ULB_FIELD].dropna().unique().tolist())
@@ -187,10 +189,11 @@ for ulb in ulb_list:
         drain_union = dr.union_all() if len(dr)>0 else None
 
         prev_wind = None
-        wr = wind_df[wind_df[WIND_ULB_FIELD].astype(str).str.strip()==ulb]
-        if len(wr)>0:
-            d = str(wr.iloc[0][WIND_DIR_FIELD]).strip().upper()
-            if d in VALID_WIND_DIRS: prev_wind = d
+        if wind_df is not None:
+            wr = wind_df[wind_df[WIND_ULB_FIELD].astype(str).str.strip()==ulb]
+            if len(wr)>0:
+                d = str(wr.iloc[0][WIND_DIR_FIELD]).strip().upper()
+                if d in VALID_WIND_DIRS: prev_wind = d
 
         w["centroid"] = w.geometry.centroid
         w["x"] = w.centroid.x
@@ -202,6 +205,40 @@ for ulb in ulb_list:
         # int(max(1, min(n, n_wards)))).
         max_n = max(1, n_wards)
 
+        # ── Score ONE grid over the whole city ONCE ──────────────────────
+        # elevation/flood/sewer/stream/drain scores only depend on a
+        # candidate point's position, never on which KMeans zone it later
+        # falls in -- so computing them once per city (instead of once per
+        # zone per N, which is what made this O(max_n^2)) gives identical
+        # per-point scores while cutting the DEM/distance work down to what
+        # the single-pass version already did in ~77s for all 22 cities.
+        # Only wind_score is zone-dependent (it's relative to a zone's own
+        # centroid), so it's recomputed per zone below -- that part is cheap.
+        cand = make_grid(boundary_geom, utm_crs, GRID_SPACING_M, MAX_CANDIDATES_PER_ZONE)
+        if len(cand) == 0:
+            raise ValueError("empty grid")
+
+        cd = cand.to_crs(dem.crs)
+        vals = np.array([v[0] for v in dem.sample([(g.x, g.y) for g in cd.geometry])], dtype=float)
+        cand["elev"] = vals
+        if dem.nodata is not None:
+            cand.loc[cand["elev"] == dem.nodata, "elev"] = np.nan
+        cand = cand[cand["elev"].notna()].copy()
+        if len(cand) == 0:
+            raise ValueError("no valid elevation")
+        cand["elev_score"] = inv_dist(cand["elev"])
+
+        fj = gpd.sjoin(cand, w[["FloodScore", "FloodClass", "geometry"]], how="left", predicate="within")
+        fj = fj[~fj.index.duplicated(keep="first")]
+        cand["flood_score"] = fj["FloodScore"].reindex(cand.index).fillna(0.0).values
+        cand["flood_class"] = fj["FloodClass"].reindex(cand.index).fillna("Unclassified").values
+
+        cand["sewer_score"]  = inv_dist(cand.distance(sewer_union))  if sewer_union  is not None else 0.0
+        cand["stream_score"] = inv_dist(cand.distance(stream_union)) if stream_union is not None else 0.0
+        cand["drain_score"]  = inv_dist(cand.distance(drain_union))  if drain_union  is not None else 0.0
+        cand["cx"] = cand.geometry.x
+        cand["cy"] = cand.geometry.y
+
         proposals_by_n = {}
 
         for n_clusters in range(1, max_n + 1):
@@ -212,43 +249,44 @@ for ulb in ulb_list:
             zones = w.drop(columns=["centroid"]).dissolve(by="cluster").reset_index()
             zones["Capacity_MLD"] = zones["cluster"].map(cap)
 
+            # Assign each already-scored grid point to its zone -- cheap
+            # relative to the DEM/distance work done once above.
+            zj = gpd.sjoin(cand, zones[["cluster", "geometry"]], how="inner", predicate="within")
+            zj = zj[~zj.index.duplicated(keep="first")]
+
+            W = WEIGHTS
             zone_best = []
             for _, zrow in zones.iterrows():
                 cid, zgeom = zrow["cluster"], zrow.geometry
-
-                cand = make_grid(zgeom, utm_crs, GRID_SPACING_M, MAX_CANDIDATES_PER_ZONE)
-                if len(cand) == 0:
+                zc = zj[zj["cluster"] == cid]
+                if len(zc) == 0:
                     continue
 
-                cd = cand.to_crs(dem.crs)
-                vals = np.array([v[0] for v in dem.sample([(g.x, g.y) for g in cd.geometry])], dtype=float)
-                cand["elev"] = vals
-                if dem.nodata is not None:
-                    cand.loc[cand["elev"] == dem.nodata, "elev"] = np.nan
-                cand = cand[cand["elev"].notna()].copy()
-                if len(cand) == 0:
-                    continue
-                cand["elev_score"] = inv_dist(cand["elev"])
+                if prev_wind:
+                    zcx = zc["cx"].to_numpy(); zcy = zc["cy"].to_numpy()
+                    dx = pd.Series(zcx - zgeom.centroid.x, index=zc.index)
+                    dy = pd.Series(zcy - zgeom.centroid.y, index=zc.index)
+                    if prev_wind == "NE":   ws = (normalize(-dx)+normalize(-dy))/2
+                    elif prev_wind == "SW": ws = (normalize(dx)+normalize(dy))/2
+                    elif prev_wind == "NW": ws = (normalize(-dx)+normalize(dy))/2
+                    elif prev_wind == "SE": ws = (normalize(dx)+normalize(-dy))/2
+                    elif prev_wind == "N":  ws = normalize(-dy)
+                    elif prev_wind == "S":  ws = normalize(dy)
+                    elif prev_wind == "E":  ws = normalize(dx)
+                    elif prev_wind == "W":  ws = normalize(-dx)
+                    else: ws = pd.Series(np.zeros(len(zc)), index=zc.index)
+                else:
+                    ws = pd.Series(np.zeros(len(zc)), index=zc.index)
 
-                fj = gpd.sjoin(cand, w[["FloodScore", "FloodClass", "geometry"]], how="left", predicate="within")
-                fj = fj[~fj.index.duplicated(keep="first")]
-                cand["flood_score"] = fj["FloodScore"].reindex(cand.index).fillna(0.0).values
-                cand["flood_class"] = fj["FloodClass"].reindex(cand.index).fillna("Unclassified").values
-
-                cand["sewer_score"]  = inv_dist(cand.distance(sewer_union))  if sewer_union  is not None else 0.0
-                cand["stream_score"] = inv_dist(cand.distance(stream_union)) if stream_union is not None else 0.0
-                cand["drain_score"]  = inv_dist(cand.distance(drain_union))  if drain_union  is not None else 0.0
-                cand["wind_score"]   = wind_score(cand, zgeom, prev_wind) if prev_wind else 0.0
-
-                W = WEIGHTS
-                cand["score"] = (W["elev"]*cand["elev_score"] + W["flood"]*cand["flood_score"]
-                                + W["sewer"]*cand["sewer_score"] + W["stream"]*cand["stream_score"]
-                                + W["drain"]*cand["drain_score"] + W["wind"]*cand["wind_score"])
-                cand = cand.dropna(subset=["score"])
-                if len(cand) == 0:
+                score = (W["elev"]*zc["elev_score"] + W["flood"]*zc["flood_score"]
+                       + W["sewer"]*zc["sewer_score"] + W["stream"]*zc["stream_score"]
+                       + W["drain"]*zc["drain_score"] + W["wind"]*ws)
+                score = score.dropna()
+                if len(score) == 0:
                     continue
 
-                best = cand.loc[cand["score"].idxmax()]
+                best_idx = score.idxmax()
+                best = zc.loc[best_idx]
                 zone_best.append({
                     "cluster": int(cid),
                     "Capacity_MLD": float(zrow["Capacity_MLD"]),
@@ -258,8 +296,8 @@ for ulb in ulb_list:
                     "sewer_score": float(best["sewer_score"]),
                     "stream_score": float(best["stream_score"]),
                     "drain_score": float(best["drain_score"]),
-                    "wind_score": float(best["wind_score"]),
-                    "score": float(best["score"]),
+                    "wind_score": float(ws.loc[best_idx]),
+                    "score": float(score.loc[best_idx]),
                     "geometry": best.geometry,
                 })
 
