@@ -95,17 +95,27 @@ def list_cities_with_stp() -> List[str]:
 # load_stp_data / get_stp_geojson / get_stp_summary / get_stp_table are
 # unchanged.
 #
-# A separate, pre-generated, already-ranked pool of candidate sites per
-# city (stp_data/<City>_candidates.json) is produced offline by
-# generate_stp_candidates.py, using the SAME weights and scoring formula as
-# the existing pipeline (elev/flood/sewer/stream/drain/wind). The only
-# addition beyond that existing formula is a minimum-spacing rule applied
-# when building the ranked pool, so "top N" are N genuinely distinct sites.
-# It does not change any score, weight, or existing STP location.
+# Placement methodology (matches the reference code, STP_Code.docx, exactly):
+# for a requested count N, the siting pipeline runs KMeans(n_clusters=N) over
+# the city's ward centroids, dissolves the wards into N zones, and keeps only
+# the single best-scoring candidate site in each zone. One winner per
+# geographically-partitioned zone guarantees the N sites are spread across
+# the whole city by construction — the same guarantee the reference's
+# original per-cluster pipeline relies on.
 #
-# At request time this is a cached JSON read + slice — no live
+# generate_stp_candidates.py precomputes this offline for every N from 1 up
+# to a city's ward count (the same cap the reference applies to n_clusters),
+# using the SAME weights and scoring formula as the existing pipeline
+# (elev/flood/sewer/stream/drain/wind) — nothing about the formula changed,
+# only the selection rule that decides which candidates become the N sites.
+# A previous version of this feature instead built one flat grid over the
+# whole city and took the top N by score subject to a 300m minimum-spacing
+# rule; that rule did not guarantee city-wide spread and is what was
+# producing STPs clustered in one area. It has been removed.
+#
+# At request time this remains a cached JSON read + slice — no live
 # geoprocessing — which keeps it fast and safe on a memory-constrained
-# instance.
+# instance. Only the offline generation step changed.
 # ─────────────────────────────────────────────────────────────────────────────
 
 CANDIDATES_DIR = Path(__file__).parent.parent / "stp_data" / "candidates"
@@ -113,7 +123,7 @@ CANDIDATES_DIR = Path(__file__).parent.parent / "stp_data" / "candidates"
 
 @lru_cache(maxsize=32)
 def load_stp_candidates(city: str) -> Optional[Dict[str, Any]]:
-    """Load the pre-generated, already-ranked candidate pool for a city."""
+    """Load the pre-generated per-N zonal siting results for a city."""
     json_path = CANDIDATES_DIR / f"{city}_candidates.json"
     if json_path.exists():
         with open(json_path) as f:
@@ -123,37 +133,41 @@ def load_stp_candidates(city: str) -> Optional[Dict[str, Any]]:
 
 
 def get_stp_candidate_count(city: str) -> int:
-    """Number of valid, well-spaced candidate sites available for a city."""
+    """
+    Largest number of STPs the zonal methodology can site for this city —
+    bounded by its number of wards, exactly as the reference caps
+    n_clusters at n_wards.
+    """
     data = load_stp_candidates(city)
     if not data:
         return 0
-    return int(data.get("available_candidates", len(data.get("candidates", []))))
+    return int(data.get("max_n", 0))
 
 
 def suggest_top_n_stps(city: str, n: int) -> Dict[str, Any]:
     """
-    Return the top-N ranked candidate sites for a city as a result dict:
+    Return the N zonal-best candidate sites for a city as a result dict:
 
         {"status": "ok", "city", "requested", "available", "data": <GeoJSON>}
         {"status": "error", "reason": "no_data" | "invalid_count" | "count_too_high",
          "message": <human-readable>, "available": <int>}
 
-    Ranking, weights and scoring are entirely inherited from
-    generate_stp_candidates.py — this function only validates and slices.
+    Placement, weights and scoring are entirely inherited from
+    generate_stp_candidates.py — this function only validates and looks up
+    the precomputed result for the requested N.
 
     Each returned feature is labelled "STP 1", "STP 2", ... in suitability
     rank order (best first), rather than a numeric candidate id, so the map
     marker/popup reads the same way as the original per-cluster STPs did.
     """
     data = load_stp_candidates(city)
-    if not data or not data.get("candidates"):
+    if not data or not data.get("proposals_by_n"):
         return {
             "status": "error", "reason": "no_data", "available": 0,
             "message": f"No suitable STP locations are available for {city}.",
         }
 
-    candidates = data["candidates"]
-    available = len(candidates)
+    available = int(data.get("max_n", 0))
 
     if not isinstance(n, int) or n <= 0:
         return {
@@ -161,7 +175,8 @@ def suggest_top_n_stps(city: str, n: int) -> Dict[str, Any]:
             "message": "Number of STPs must be a positive whole number.",
         }
 
-    if n > available:
+    records = data["proposals_by_n"].get(str(n))
+    if records is None:
         return {
             "status": "error", "reason": "count_too_high", "available": available,
             "message": (
@@ -170,9 +185,8 @@ def suggest_top_n_stps(city: str, n: int) -> Dict[str, Any]:
             ),
         }
 
-    top_n = candidates[:n]  # already sorted by Score, descending, at generation time
     features = []
-    for c in top_n:
+    for c in records:
         features.append({
             "type": "Feature",
             "geometry": {
@@ -182,8 +196,8 @@ def suggest_top_n_stps(city: str, n: int) -> Dict[str, Any]:
             "properties": {
                 "stp_id":       f"STP {c['rank']}",
                 "rank":         c["rank"],
-                "cluster":      None,
-                "Capacity_MLD": None,
+                "cluster":      c.get("cluster"),
+                "Capacity_MLD": c.get("Capacity_MLD"),
                 "Elevation":    c["Elevation"],
                 "FloodScore":   c["FloodScore"],
                 "FloodClass":   c.get("FloodClass", "—"),

@@ -1,18 +1,70 @@
 """
-generate_stp_candidates.py — pre-computes a ranked, well-spaced pool of
-candidate STP sites per city, using the EXACT SAME scoring formula, weights
-and helper functions as the existing per-cluster STP siting pipeline
-(run_stp.py / Updated_Code.docx). Nothing about the scoring changes here.
+generate_stp_candidates.py — pre-computes, per city, the STP siting result
+for EVERY possible N (number of STPs a user might request), using the exact
+placement methodology from the reference code (STP_Code.docx):
 
-This is what makes the new "Suggest N STPs" feature possible without doing
-live KMeans + grid + DEM geoprocessing on every button click on a 512MB
-Render free instance -- the ranked pool is computed once, offline, and the
-live endpoint just validates + slices top N from it.
+    KMeans(n_clusters=N) over ward centroids -> N zones (dissolved wards)
+    -> for each zone, build a candidate grid and score it -> keep ONLY the
+       single best-scoring candidate in that zone.
 
-Output: stp_data/<City>_candidates.json  (one per city)
+This is the SAME selection rule as the original per-cluster pipeline
+(run_stp.py / Updated_Code.docx): one winner per geographically-partitioned
+zone. It guarantees the N sites are spread across the whole city by
+construction, because each zone is a disjoint region of the city and each
+zone contributes exactly one site.
+
+REPLACES the previous version of this script, which built ONE flat grid
+over the whole city, sorted every candidate by score, and greedily kept the
+top N subject only to a 300m minimum-spacing rule. That rule did not
+guarantee city-wide spread: when the best sewer/stream/elevation corridor
+was concentrated in one part of a city, most or all of the top-N highest
+scores could legitimately sit within a few hundred metres of each other
+(300m apart is still "one corner of the city"), which is exactly the
+clustering behaviour that was reported. The KMeans-zonal method does not
+have this failure mode, because placement is bounded per zone rather than
+by raw score rank.
+
+Nothing about the scoring formula, weights, or per-point score components
+(elevation, flood, sewer, stream, drain, wind) has changed. The invented
+MIN_SPACING_M rule from the previous version has been removed entirely —
+it is not part of the reference methodology and is no longer needed, since
+spacing is now a structural consequence of one-pick-per-zone rather than a
+post-hoc filter.
+
+Because the zonal picks are precomputed for every N up to a city's ward
+count (matching the reference's own cap: n_clusters is limited to n_wards,
+"resolve_n_clusters" -> min(n, n_wards)), the live "/suggest" endpoint keeps
+doing exactly what it did before: a cached JSON read + slice, no live GIS
+geoprocessing per request. Only this offline generation step changed.
+
+Output: stp_data/candidates/<City>_candidates.json, one per city:
+    {
+      "city": "<ULB name>",
+      "max_n": <int>,              # = number of wards for this city;
+                                    #   the largest N the zonal method can site
+      "weights": {...},
+      "proposals_by_n": {
+        "1": [ {...one record...} ],
+        "2": [ {...}, {...} ],
+        ...
+        "<max_n>": [ ... <max_n> records ... ]
+      }
+    }
+
+Each record has the same fields the previous version produced (rank,
+Elevation, FloodScore, FloodClass, SewerScore, StreamScore, DrainScore,
+WindScore, Score, latitude, longitude, ward_name, ward_no, area_name,
+city), plus Capacity_MLD and cluster now correctly populated per zone
+(previously always null, because the flat-grid approach had no zone to
+compute a capacity from).
+
+Run this offline, exactly as before, whenever ward/sewer/stream/drain/DEM/
+wind inputs change, and commit the resulting stp_data/candidates/*.json
+files.
 """
 import os, math, json, time, warnings
 import geopandas as gpd, pandas as pd, numpy as np, rasterio
+from sklearn.cluster import KMeans
 warnings.filterwarnings("ignore")
 
 t0 = time.time()
@@ -28,17 +80,13 @@ os.makedirs(OUT_DIR, exist_ok=True)
 
 WARD_ULB_FIELD, SEWER_ULB_FIELD, WARD_NO_FIELD = "ub_nm_e", "ulb_nm", "wardno"
 WIND_ULB_FIELD, WIND_DIR_FIELD = "ulbname", "Prevailing_Direction"
+SEWAGE_FIELD = "SEWAGE_MLD"
 
-# ── IDENTICAL to run_stp.py -- same weights, not touched ─────────────────────
+# ── IDENTICAL to the reference (STP_Code.docx) -- weights not touched ────────
 WEIGHTS = {"elev":0.40,"flood":0.20,"sewer":0.10,"stream":0.10,"drain":0.10,"wind":0.10}
 assert abs(sum(WEIGHTS.values())-1.0) < 1e-9
 
 GRID_SPACING_M, MAX_CANDIDATES_PER_ZONE = 100, 20000
-# NEW for this feature only: minimum spacing between two suggested sites, so
-# "top N" are N genuinely different locations rather than N points 50m apart
-# from each other. This is a selection rule, not a change to the scoring
-# formula or weights -- disclosed explicitly to the user.
-MIN_SPACING_M = 300
 
 RISK_MAPS = {
  "Narmadapuram": {f"W{i}":r for i,r in enumerate(
@@ -100,7 +148,7 @@ stream = gpd.GeoDataFrame(stream, geometry="geometry", crs=4326)
 
 dem = rasterio.open(DEM_FILE)
 wind_df = pd.read_csv(WIND_FILE)
-if "SEWAGE_MLD" not in wards.columns: wards["SEWAGE_MLD"] = 0.0
+if SEWAGE_FIELD not in wards.columns: wards[SEWAGE_FIELD] = 0.0
 
 ulb_list = sorted(wards[WARD_ULB_FIELD].dropna().unique().tolist())
 print(f"Found {len(ulb_list)} ULBs\n")
@@ -115,6 +163,7 @@ for ulb in ulb_list:
         try: utm_crs = w.to_crs(4326).estimate_utm_crs()
         except Exception: utm_crs = "EPSG:32644"
         w = w.to_crs(utm_crs)
+        w[SEWAGE_FIELD] = pd.to_numeric(w[SEWAGE_FIELD], errors="coerce").fillna(0.0)
 
         rmap = RISK_MAPS.get(ulb)
         w["Ward_ID"] = "W" + w[WARD_NO_FIELD].astype(str).str.strip()
@@ -143,77 +192,122 @@ for ulb in ulb_list:
             d = str(wr.iloc[0][WIND_DIR_FIELD]).strip().upper()
             if d in VALID_WIND_DIRS: prev_wind = d
 
-        # ONE grid over the WHOLE city boundary (not per-cluster) -- this is
-        # the one structural difference from run_stp.py, needed because we
-        # want a ranked pool across the whole city, not one-best-per-zone.
-        cand = make_grid(boundary_geom, utm_crs, GRID_SPACING_M, MAX_CANDIDATES_PER_ZONE)
-        if len(cand)==0: raise ValueError("empty grid")
+        w["centroid"] = w.geometry.centroid
+        w["x"] = w.centroid.x
+        w["y"] = w.centroid.y
 
-        cd = cand.to_crs(dem.crs)
-        vals = np.array([v[0] for v in dem.sample([(g.x,g.y) for g in cd.geometry])], dtype=float)
-        cand["elev"] = vals
-        if dem.nodata is not None: cand.loc[cand["elev"]==dem.nodata,"elev"] = np.nan
-        cand = cand[cand["elev"].notna()].copy()
-        if len(cand)==0: raise ValueError("no valid elevation")
-        cand["elev_score"] = inv_dist(cand["elev"])
+        n_wards = len(w)
+        # Same cap the reference applies: n_clusters can never exceed the
+        # number of wards available to cluster (resolve_n_clusters ->
+        # int(max(1, min(n, n_wards)))).
+        max_n = max(1, n_wards)
 
-        fj = gpd.sjoin(cand, w[["FloodScore","FloodClass","geometry"]], how="left", predicate="within")
-        fj = fj[~fj.index.duplicated(keep="first")]
-        cand["flood_score"] = fj["FloodScore"].reindex(cand.index).fillna(0.0).values
-        cand["flood_class"] = fj["FloodClass"].reindex(cand.index).fillna("Unclassified").values
+        proposals_by_n = {}
 
-        cand["sewer_score"]  = inv_dist(cand.distance(sewer_union))  if sewer_union  is not None else 0.0
-        cand["stream_score"] = inv_dist(cand.distance(stream_union)) if stream_union is not None else 0.0
-        cand["drain_score"]  = inv_dist(cand.distance(drain_union))  if drain_union  is not None else 0.0
-        cand["wind_score"]   = wind_score(cand, boundary_geom, prev_wind) if prev_wind else 0.0
+        for n_clusters in range(1, max_n + 1):
+            km = KMeans(n_clusters=n_clusters, random_state=42, n_init=20)
+            w["cluster"] = km.fit_predict(w[["x", "y"]])
 
-        W = WEIGHTS
-        cand["score"] = (W["elev"]*cand["elev_score"] + W["flood"]*cand["flood_score"]
-                        + W["sewer"]*cand["sewer_score"] + W["stream"]*cand["stream_score"]
-                        + W["drain"]*cand["drain_score"] + W["wind"]*cand["wind_score"])
-        cand = cand.dropna(subset=["score"]).sort_values("score", ascending=False).reset_index(drop=True)
+            cap = w.groupby("cluster")[SEWAGE_FIELD].sum()
+            zones = w.drop(columns=["centroid"]).dissolve(by="cluster").reset_index()
+            zones["Capacity_MLD"] = zones["cluster"].map(cap)
 
-        # Greedy non-maximum suppression: walk best-to-worst, keep a point
-        # only if it's >= MIN_SPACING_M from every already-kept point.
-        kept_idx, kept_geoms = [], []
-        for idx, row in cand.iterrows():
-            g = row.geometry
-            if all(g.distance(kg) >= MIN_SPACING_M for kg in kept_geoms):
-                kept_idx.append(idx); kept_geoms.append(g)
-        ranked = cand.loc[kept_idx].reset_index(drop=True)
+            zone_best = []
+            for _, zrow in zones.iterrows():
+                cid, zgeom = zrow["cluster"], zrow.geometry
 
-        w_wgs = w.to_crs(4326)
-        pts_wgs = gpd.GeoSeries(ranked.geometry, crs=utm_crs).to_crs(4326)
+                cand = make_grid(zgeom, utm_crs, GRID_SPACING_M, MAX_CANDIDATES_PER_ZONE)
+                if len(cand) == 0:
+                    continue
 
-        records = []
-        for rank, (i, row) in enumerate(ranked.iterrows(), start=1):
-            pt = pts_wgs.iloc[i]
-            wj = w.copy(); wj["_d"] = wj.geometry.distance(row.geometry)
-            nearest = wj.loc[wj["_d"].idxmin()]
-            ward_name = str(nearest.get("ward_name") or nearest.get("WARD_NAME") or nearest.get("wardname") or "").strip()
-            records.append({
-                "rank": rank,
-                "Elevation": round(float(row["elev"]),1),
-                "FloodScore": round(float(row["flood_score"]),3),
-                "FloodClass": str(row["flood_class"]),
-                "SewerScore": round(float(row["sewer_score"]),3),
-                "StreamScore": round(float(row["stream_score"]),3),
-                "DrainScore": round(float(row["drain_score"]),3),
-                "WindScore": round(float(row["wind_score"]),3),
-                "Score": round(float(row["score"]),4),
-                "latitude": round(float(pt.y),6),
-                "longitude": round(float(pt.x),6),
-                "ward_name": ward_name,
-                "ward_no": str(nearest.get(WARD_NO_FIELD) or "").strip(),
-                "area_name": f"{ward_name}, {ulb}" if ward_name else ulb,
-                "city": ulb,
-            })
+                cd = cand.to_crs(dem.crs)
+                vals = np.array([v[0] for v in dem.sample([(g.x, g.y) for g in cd.geometry])], dtype=float)
+                cand["elev"] = vals
+                if dem.nodata is not None:
+                    cand.loc[cand["elev"] == dem.nodata, "elev"] = np.nan
+                cand = cand[cand["elev"].notna()].copy()
+                if len(cand) == 0:
+                    continue
+                cand["elev_score"] = inv_dist(cand["elev"])
 
-        out = {"city": ulb, "available_candidates": len(records),
-               "min_spacing_m": MIN_SPACING_M, "weights": WEIGHTS, "candidates": records}
-        json.dump(out, open(f"{OUT_DIR}/{ulb}_candidates.json","w"), indent=2)
-        print(f"{ulb:16} {len(cand):5} scored -> {len(records):4} spaced candidates (>= {MIN_SPACING_M}m apart)")
-        summary.append((ulb, len(records)))
+                fj = gpd.sjoin(cand, w[["FloodScore", "FloodClass", "geometry"]], how="left", predicate="within")
+                fj = fj[~fj.index.duplicated(keep="first")]
+                cand["flood_score"] = fj["FloodScore"].reindex(cand.index).fillna(0.0).values
+                cand["flood_class"] = fj["FloodClass"].reindex(cand.index).fillna("Unclassified").values
+
+                cand["sewer_score"]  = inv_dist(cand.distance(sewer_union))  if sewer_union  is not None else 0.0
+                cand["stream_score"] = inv_dist(cand.distance(stream_union)) if stream_union is not None else 0.0
+                cand["drain_score"]  = inv_dist(cand.distance(drain_union))  if drain_union  is not None else 0.0
+                cand["wind_score"]   = wind_score(cand, zgeom, prev_wind) if prev_wind else 0.0
+
+                W = WEIGHTS
+                cand["score"] = (W["elev"]*cand["elev_score"] + W["flood"]*cand["flood_score"]
+                                + W["sewer"]*cand["sewer_score"] + W["stream"]*cand["stream_score"]
+                                + W["drain"]*cand["drain_score"] + W["wind"]*cand["wind_score"])
+                cand = cand.dropna(subset=["score"])
+                if len(cand) == 0:
+                    continue
+
+                best = cand.loc[cand["score"].idxmax()]
+                zone_best.append({
+                    "cluster": int(cid),
+                    "Capacity_MLD": float(zrow["Capacity_MLD"]),
+                    "elev": float(best["elev"]),
+                    "flood_score": float(best["flood_score"]),
+                    "flood_class": str(best["flood_class"]),
+                    "sewer_score": float(best["sewer_score"]),
+                    "stream_score": float(best["stream_score"]),
+                    "drain_score": float(best["drain_score"]),
+                    "wind_score": float(best["wind_score"]),
+                    "score": float(best["score"]),
+                    "geometry": best.geometry,
+                })
+
+            if len(zone_best) == 0:
+                continue
+
+            # Best-to-worst by Score, purely for the "STP 1 = best" display
+            # label the feature already used -- this does not change WHICH
+            # points were picked (one per zone), only their rank number.
+            zone_best.sort(key=lambda r: -r["score"])
+
+            pts_wgs = gpd.GeoSeries([r["geometry"] for r in zone_best], crs=utm_crs).to_crs(4326)
+            records = []
+            for rank, r in enumerate(zone_best, start=1):
+                pt = pts_wgs.iloc[rank - 1]
+                wj = w.copy(); wj["_d"] = wj.geometry.distance(r["geometry"])
+                nearest = wj.loc[wj["_d"].idxmin()]
+                ward_name = str(nearest.get("ward_name") or nearest.get("WARD_NAME") or nearest.get("wardname") or "").strip()
+                records.append({
+                    "rank": rank,
+                    "cluster": r["cluster"],
+                    "Capacity_MLD": round(r["Capacity_MLD"], 2),
+                    "Elevation": round(r["elev"], 1),
+                    "FloodScore": round(r["flood_score"], 3),
+                    "FloodClass": r["flood_class"],
+                    "SewerScore": round(r["sewer_score"], 3),
+                    "StreamScore": round(r["stream_score"], 3),
+                    "DrainScore": round(r["drain_score"], 3),
+                    "WindScore": round(r["wind_score"], 3),
+                    "Score": round(r["score"], 4),
+                    "latitude": round(float(pt.y), 6),
+                    "longitude": round(float(pt.x), 6),
+                    "ward_name": ward_name,
+                    "ward_no": str(nearest.get(WARD_NO_FIELD) or "").strip(),
+                    "area_name": f"{ward_name}, {ulb}" if ward_name else ulb,
+                    "city": ulb,
+                })
+            proposals_by_n[str(n_clusters)] = records
+
+        if not proposals_by_n:
+            raise ValueError("no STPs generated for any N")
+
+        out_max_n = max(int(k) for k in proposals_by_n)
+        out = {"city": ulb, "max_n": out_max_n, "weights": WEIGHTS, "proposals_by_n": proposals_by_n}
+        json.dump(out, open(f"{OUT_DIR}/{ulb}_candidates.json", "w"), indent=2)
+        total_picks = sum(len(v) for v in proposals_by_n.values())
+        print(f"{ulb:16} wards={n_wards:3}  max_n={out_max_n:3}  -> {total_picks} zone-best sites written across N=1..{out_max_n}")
+        summary.append((ulb, out_max_n))
 
     except Exception as e:
         print(f"{ulb:16} SKIPPED ({e})")
@@ -221,6 +315,6 @@ for ulb in ulb_list:
 
 dem.close()
 print(f"\nDone in {time.time()-t0:.0f}s")
-print("\nAvailable-candidate ceiling per city (this is what request #10's validation checks against):")
+print("\nMax N per city (this is what /suggest validates 'count' against):")
 for ulb, n in sorted(summary, key=lambda x: -x[1]):
     print(f"  {ulb:16} {n}")
