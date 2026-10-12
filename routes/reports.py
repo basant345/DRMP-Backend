@@ -23,7 +23,9 @@ from config import PATHS, DEFAULT_CITY
 from utils.gis_loader import load_layer, to_geojson
 from utils.gis_analysis import ward_statistics
 from services.city_service import validate_city
-from services.stp_service import get_stp_table, get_stp_summary, load_stp_data
+from services.stp_service import (
+    get_stp_table, get_stp_summary, load_stp_data, suggest_top_n_stps,
+)
 from services import report_content
 
 logger = logging.getLogger("drmp.reports")
@@ -40,6 +42,52 @@ def _get_draft_flag() -> bool:
     Data checks block. Never shown in a non-draft (final) report."""
     v = (request.args.get("draft") or "").strip().lower()
     return v in ("1", "true", "yes", "on")
+
+
+def _get_stp_count():
+    """
+    Number of STPs the user chose with "Suggest" on the GIS Map page. The
+    Reports page passes it as ?stp_count=N. Returns a positive int, or None
+    when absent/invalid (the report then falls back to the saved per-city
+    STP file, as before).
+    """
+    raw = (request.args.get("stp_count") or "").strip()
+    if not raw:
+        return None
+    try:
+        n = int(raw)
+    except ValueError:
+        return None
+    return n if n > 0 else None
+
+
+def _stp_from_user_choice(city: str, n: int):
+    """
+    Build (summary, table) from the same zonal "Suggest N STPs" result that
+    the GIS Map and Analysis pages show, so the report matches what the user
+    sees on screen. Returns None if no suggestion can be made for that N
+    (caller falls back to the saved per-city file).
+    """
+    result = suggest_top_n_stps(city, n)
+    if result.get("status") != "ok":
+        return None
+    feats = result["data"]["features"]
+    table = [dict(f["properties"]) for f in feats]
+    if not table:
+        return None
+
+    caps = [r["Capacity_MLD"] for r in table if r.get("Capacity_MLD") is not None]
+    scores = [r["Score"] for r in table if r.get("Score") is not None]
+    elevs = [r["Elevation"] for r in table if r.get("Elevation") is not None]
+    summary = {
+        "city": city,
+        "available": True,
+        "count": len(table),
+        "total_capacity_mld": round(sum(caps), 2) if caps else None,
+        "avg_score": round(sum(scores) / len(scores), 4) if scores else None,
+        "avg_elevation_m": round(sum(elevs) / len(elevs), 2) if elevs else None,
+    }
+    return summary, table
 
 
 @reports_bp.route("/csv/wards")
@@ -181,7 +229,7 @@ def _report_filename(city: str, ext: str) -> str:
     return f"DRMP_{safe_city}_{datetime.now().strftime('%Y%m%d')}.{ext}"
 
 
-def _gather_report_data(city: str, draft: bool):
+def _gather_report_data(city: str, draft: bool, stp_count=None):
     """
     Everything a DRMP report (PDF or DOCX) needs, assembled once so both
     renderers stay in sync. Raises nothing for a city with no editorial
@@ -200,8 +248,14 @@ def _gather_report_data(city: str, draft: bool):
     wards_gdf = load_layer(str(PATHS["wards_sewage"]), city)
     ward_records = sorted(ward_statistics(wards_gdf), key=_ward_sort_key)
 
-    stp_summary = get_stp_summary(city)
-    stp_table = get_stp_table(city)
+    # STP section: use the user's chosen count when given (same source as the
+    # GIS Map / Analysis pages); otherwise the saved per-city STP file.
+    chosen = _stp_from_user_choice(city, stp_count) if stp_count else None
+    if chosen:
+        stp_summary, stp_table = chosen
+    else:
+        stp_summary = get_stp_summary(city)
+        stp_table = get_stp_table(city)
     stp_raw = load_stp_data(city)
     stp_weights = (stp_raw or {}).get("weights", {})
 
@@ -595,6 +649,7 @@ def export_ward_pdf():
     """Generate the full DRMP report (Part 1 common + Part 2 selected city) as a PDF."""
     city = _get_city()
     draft = _get_draft_flag()
+    stp_count = _get_stp_count()
     try:
         from reportlab.platypus import SimpleDocTemplate  # noqa: F401 - import check below gives a clean 501
     except ImportError:
@@ -602,7 +657,7 @@ def export_ward_pdf():
 
     try:
         city = validate_city(city)
-        data = _gather_report_data(city, draft)
+        data = _gather_report_data(city, draft, stp_count)
         pdf_bytes = _build_pdf(data)
         return send_file(
             io.BytesIO(pdf_bytes), mimetype="application/pdf", as_attachment=True,
@@ -923,6 +978,7 @@ def export_drmp_docx():
     """Generate the full DRMP report (Part 1 common + Part 2 selected city) as a DOCX."""
     city = _get_city()
     draft = _get_draft_flag()
+    stp_count = _get_stp_count()
     try:
         import docx  # noqa: F401
     except ImportError:
@@ -930,7 +986,7 @@ def export_drmp_docx():
 
     try:
         city = validate_city(city)
-        data = _gather_report_data(city, draft)
+        data = _gather_report_data(city, draft, stp_count)
         docx_bytes = _build_docx(data)
         return send_file(
             io.BytesIO(docx_bytes),

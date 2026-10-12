@@ -155,10 +155,11 @@ def key_findings(city_record: Dict[str, Any], stp_summary: Optional[Dict[str, An
             "Existing drains convey untreated wastewater directly or indirectly to the Narmada River."
         )
 
-    if stp_summary and stp_summary.get("available") and stp_summary.get("count"):
+    if (stp_summary and stp_summary.get("available") and stp_summary.get("count")
+            and stp_summary.get("total_capacity_mld") is not None):
         bullets.append(
             f"The proposed {stp_summary['count']}-STP system will provide "
-            f"{stp_summary['total_capacity_mld']:.2f} MLD of treatment capacity for the areas it covers."
+            f"{float(stp_summary['total_capacity_mld']):.2f} MLD of treatment capacity for the areas it covers."
         )
 
     return bullets
