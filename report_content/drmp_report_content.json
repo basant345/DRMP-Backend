@@ -1,0 +1,1229 @@
+{
+  "version": "2026-10-10",
+  "source": "Hamari Jeevanrekha Narmada, Urban Development and Housing Department, Government of Madhya Pradesh (August 2024); as edited in District_River_Management_Plan.docx",
+  "computed_line": {
+    "formula": {
+      "sewage_mld": "population * 108 / 1e6",
+      "stp_capacity_pct": "stp_mld / sewage_mld * 100",
+      "wtp_lpcd": "wtp_mld * 1e6 / population"
+    },
+    "template": "Computed at 108 lpcd: sewage ≈ {sewage_mld:.2f} MLD; STP capacity is {stp_capacity_pct:.0f}% of this{ (below today’s estimate) if stp_capacity_pct < 100}. WTP capacity ≈ {wtp_lpcd:.0f} litres per person per day."
+  },
+  "app_cities_without_profile": [
+    "Dahi",
+    "Harsud",
+    "Kasrawad",
+    "Khandwa",
+    "Punasa",
+    "Shahganj"
+  ],
+  "common": {
+    "title": "District River Management Plan",
+    "heading": "1. ABOUT THE DISTRICT RIVER MANAGEMENT PLAN",
+    "subsections": [
+      {
+        "heading": "1.1 The Narmada",
+        "paragraphs": [
+          "The Narmada is the largest river of Madhya Pradesh and, at 1,312 km, one of the longest rivers in India. It rises on the Amarkantak plateau in Anuppur district, flows west through Madhya Pradesh, Maharashtra and Gujarat, and enters the Gulf of Khambhat about 30 km west of Bharuch. About 30 major dams, including Indira Sagar, Sardar Sarovar, Omkareshwar, Bargi and Tawa, regulate its flow. The towns along its banks draw drinking water from the river and, where sewerage is incomplete, return untreated wastewater to it through natural drains."
+        ]
+      },
+      {
+        "heading": "1.2 What the DRMP is",
+        "paragraphs": [
+          "The District River Management Plan (DRMP) is a city-level planning framework, that supports Nirmal Dhara through integrated urban water management. Rather than treating wastewater on its own, the DRMP aims to close the urban water cycle: water supply, sewage generation, collection and treatment, drains and their outfalls into the river, flood risk, and reuse of treated water."
+        ]
+      },
+      {
+        "heading": "1.3 Scope of this report",
+        "paragraphs": [
+          "The Urban Development and Housing Department (UDHD), Government of Madhya Pradesh, is implementing sewerage projects in 21 towns on the banks of the Narmada. They are funded by the Asian Development Bank (5 towns), the World Bank (4), a state special fund (6), KfW of Germany (5), and AMRUT in Jabalpur. Sewerage in Amarkantak, Bhedaghat, Budni and Dharampuri is complete, and treated water there is reused for gardening, brick kilns, road washing, curing of construction and vehicle washing. The DRMP covers these 21 urban local bodies (ULBs), from Amarkantak downstream to Barwani and Sendhwa."
+        ]
+      },
+      {
+        "heading": "1.4 How each city chapter is organised",
+        "bullets": [
+          "City profile, existing water supply and sewerage, and the ULB’s own future plans.",
+          "STP analysis: ward-wise population and sewage projected to 2050 at 108 litres per person per day (135 lpcd supply, 80% return); GIS-based multi-criteria site suitability (elevation 40%, flood risk 20%, and proximity to sewers, streams and drains and wind direction, 10% each); K-Means service zones; proposed decentralised STPs, their capacities and adjacent water bodies.",
+          "Key findings and recommendations for each city."
+        ]
+      }
+    ]
+  },
+  "cities": [
+    {
+      "order": 1,
+      "slug": "amarkantak",
+      "name": "Amarkantak",
+      "app_name": "Amarkantak",
+      "in_app": true,
+      "ulb_type": "Nagar Parishad",
+      "district": "Anuppur",
+      "subtitle": "Amarkantak Nagar Parishad · Anuppur district",
+      "intro": "Amarkantak, where the Narmada rises, is a Nagar Parishad of 15 wards in Anuppur district, about 550 km from Bhopal, with 8,416 residents. Its sewerage system (1.20 MLD STP, 32 km of sewers) is complete, and a 2.09 MLD water supply scheme drawing on the Narmada is under construction.",
+      "profile": {
+        "area_ha": 47,
+        "wards": 15,
+        "population": 8416,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "550 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Origin of the Narmada (Narmada Udgam)"
+      },
+      "photo": "photos/amarkantak.jpg",
+      "photo_caption": "Narmada Udgam temple, Amarkantak",
+      "water_supply": {
+        "status": "Under construction",
+        "cost": "₹23.02 crore (incl. 10-year O&M)",
+        "funding": "AMRUT 2.0 and Mukhyamantri Shahri Peyjal Yojana",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 2.09 MLD",
+        "storage_pumping": "3 overhead tanks",
+        "network": "59 km distribution",
+        "house_connections": "2,100"
+      },
+      "sewerage": {
+        "status": "Completed (per UDHD Minister’s note)",
+        "cost": "₹17.88 crore (incl. 10-year O&M)",
+        "funding": "Government of MP (special fund)",
+        "water_source": "—",
+        "treatment_plant": "STP 1.20 MLD",
+        "storage_pumping": "2 pumping stations",
+        "network": "32.0 km sewer",
+        "house_connections": "1,518"
+      },
+      "wtp_mld": 2.09,
+      "stp_mld": 1.2,
+      "future_plans": [
+        "Upgrading and building ghats",
+        "Public amenities"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 0.91,
+        "stp_capacity_pct": 132,
+        "wtp_lpcd": 248
+      }
+    },
+    {
+      "order": 2,
+      "slug": "dindori",
+      "name": "Dindori",
+      "app_name": "Dindori",
+      "in_app": true,
+      "ulb_type": "Nagar Parishad",
+      "district": "Dindori",
+      "subtitle": "Dindori Nagar Parishad · Dindori district",
+      "intro": "Dindori is a Nagar Parishad of 15 wards (1,185 ha) on the banks of the Narmada, with 21,323 residents. A 4.9 MLD WTP supplies the town from the Narmada, and a sewerage project with a 3.84 MLD STP and 17.35 km of sewers is under construction.",
+      "profile": {
+        "area_ha": 1185,
+        "wards": 15,
+        "population": 21323,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "Not given",
+        "last_row_label": "Known for",
+        "last_row_value": "Narmada river ghats"
+      },
+      "photo": "photos/dindori.jpg",
+      "photo_caption": "Rin Mukteshwar Shiv temple, Dindori",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "₹11.00 crore",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 4.9 MLD",
+        "storage_pumping": "2 overhead tanks",
+        "network": "35.20 km distribution",
+        "house_connections": "3,112"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹32.18 crore (incl. 10-year O&M)",
+        "funding": "State government (special fund)",
+        "water_source": "—",
+        "treatment_plant": "STP 3.84 MLD",
+        "storage_pumping": "2 pumping stations",
+        "network": "17.35 km sewer",
+        "house_connections": "4,500"
+      },
+      "wtp_mld": 4.9,
+      "stp_mld": 3.84,
+      "future_plans": [
+        "Extension of the water supply scheme",
+        "Park development, roads and other infrastructure",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 2.3,
+        "stp_capacity_pct": 167,
+        "wtp_lpcd": 230
+      }
+    },
+    {
+      "order": 3,
+      "slug": "mandla",
+      "name": "Mandla",
+      "app_name": "Mandla",
+      "in_app": true,
+      "ulb_type": "Nagar Palika Parishad",
+      "district": "Mandla",
+      "subtitle": "Mandla Nagar Palika Parishad · Mandla district",
+      "intro": "Mandla is a Nagar Palika Parishad of 24 wards on the Narmada, 407 km from Bhopal, with 55,133 residents. Its KfW-funded sewerage project, with a 9.50 MLD STP, 125 km of sewers and 11 pumping stations, is under construction.",
+      "profile": {
+        "area_ha": 887,
+        "wards": 24,
+        "population": 55133,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "407 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Sahastradhara, Surajkund and temples"
+      },
+      "photo": "photos/mandla.jpg",
+      "photo_caption": "Sahastradhara, Mandla",
+      "water_supply": {
+        "status": "Under construction",
+        "cost": "₹23.02 crore (incl. 10-year O&M)",
+        "funding": "AMRUT 2.0 with Mukhyamantri Shahri Peyjal Yojana",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 2.09 MLD",
+        "storage_pumping": "3 overhead tanks",
+        "network": "59 km distribution",
+        "house_connections": "2,100"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹126.15 crore (incl. 10-year O&M)",
+        "funding": "KfW (German development bank)",
+        "water_source": "—",
+        "treatment_plant": "STP 9.50 MLD",
+        "storage_pumping": "11 pumping stations",
+        "network": "125 km sewer",
+        "house_connections": "13,200"
+      },
+      "wtp_mld": 2.09,
+      "stp_mld": 9.5,
+      "future_plans": [
+        "Roads, buildings and other construction",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [
+        "The water supply figures printed for Mandla (₹23.02 crore, 2.09 MLD, 3 tanks, 59 km, 2,100 connections) are identical to Amarkantak’s, and 2.09 MLD would give only about 38 litres per person per day. Confirm with the ULB."
+      ],
+      "expected_computed": {
+        "sewage_mld": 5.95,
+        "stp_capacity_pct": 160,
+        "wtp_lpcd": 38
+      }
+    },
+    {
+      "order": 4,
+      "slug": "jabalpur",
+      "name": "Jabalpur",
+      "app_name": "Jabalpur",
+      "in_app": true,
+      "ulb_type": "Nagar Nigam (Municipal Corporation)",
+      "district": "Jabalpur",
+      "subtitle": "Jabalpur Nagar Nigam (Municipal Corporation) · Jabalpur district",
+      "intro": "Jabalpur, the largest city on the Narmada, is a Municipal Corporation of 79 wards (36,700 ha) with about 14.98 lakh residents, 320 km from Bhopal. Under JNNURM and AMRUT, 13 of 15 sanctioned STPs (154.38 of 160.38 MLD) and 465.56 of 472.93 km of sewers are built, but only 35,000 houses are connected to the sewers against 1,03,942 sanctioned connections.",
+      "profile": {
+        "area_ha": 36700,
+        "wards": 79,
+        "population": 1498000,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "320 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Gwarighat (Gaurighat) and Bhedaghat"
+      },
+      "photo": "photos/jabalpur.jpg",
+      "photo_caption": "Gwarighat, Jabalpur",
+      "water_supply": {
+        "status": "Completed; expansion ongoing",
+        "cost": "Expansion: ₹264.49 crore",
+        "funding": "Expansion: Centre, State and ULB",
+        "water_source": "Narmada River, Pariyat–Fagua, Khandari dam",
+        "treatment_plant": "5 WTPs, 298 MLD (+1 WTP, 54 MLD ongoing)",
+        "storage_pumping": "60 overhead tanks (+18 ongoing)",
+        "network": "1,870 km distribution (+476.23 km ongoing)",
+        "house_connections": "171,228 (+4,900 ongoing)"
+      },
+      "sewerage": {
+        "status": "Mostly built (JNNURM and AMRUT)",
+        "cost": "₹540 crore sanctioned",
+        "funding": "Centre, State and ULB",
+        "water_source": "—",
+        "treatment_plant": "15 STPs sanctioned, 160.38 MLD; 13 built, 154.38 MLD",
+        "storage_pumping": "6 pumping stations (completed)",
+        "network": "472.93 km sanctioned; 465.56 km built",
+        "house_connections": "103,942 sanctioned; 80,205 built; 35,000 houses connected"
+      },
+      "wtp_mld": 298,
+      "stp_mld": 160.38,
+      "future_plans": [
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [
+        "Area is printed as 36,700 ha (367 km²); the cNARMADA Jabalpur DRMP deck uses 285 km².",
+        "The population year is not stated; 14.98 lakh is well above the Census 2011 count, so it is likely a current estimate."
+      ],
+      "expected_computed": {
+        "sewage_mld": 161.78,
+        "stp_capacity_pct": 99,
+        "wtp_lpcd": 199
+      }
+    },
+    {
+      "order": 5,
+      "slug": "bhedaghat",
+      "name": "Bhedaghat",
+      "app_name": "Bhedaghat",
+      "in_app": true,
+      "ulb_type": "Nagar Parishad",
+      "district": "Jabalpur",
+      "subtitle": "Bhedaghat Nagar Parishad · Jabalpur district",
+      "intro": "Bhedaghat, home to the Dhuandhar falls, is a Nagar Parishad of 10 wards in Jabalpur district with 6,657 residents. A 1.2 MLD WTP supplies the town, and its sewerage system (0.89 MLD STP, 8.77 km of sewers, 6 pumping stations) is complete.",
+      "profile": {
+        "area_ha": 794,
+        "wards": 10,
+        "population": 6657,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "260 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Dhuandhar waterfall"
+      },
+      "photo": "photos/bhedaghat.jpg",
+      "photo_caption": "Dhuandhar falls, Bhedaghat",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 1.2 MLD",
+        "storage_pumping": "2 overhead tanks",
+        "network": "24 km distribution",
+        "house_connections": "1,167"
+      },
+      "sewerage": {
+        "status": "Completed (per UDHD Minister’s note)",
+        "cost": "Not given",
+        "funding": "World Bank (per UDHD Minister’s note)",
+        "water_source": "—",
+        "treatment_plant": "STP 0.89 MLD",
+        "storage_pumping": "6 pumping stations",
+        "network": "8.77 km sewer",
+        "house_connections": "1,084"
+      },
+      "wtp_mld": 1.2,
+      "stp_mld": 0.89,
+      "future_plans": [
+        "Auditorium",
+        "Playground",
+        "Park development",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 0.72,
+        "stp_capacity_pct": 124,
+        "wtp_lpcd": 180
+      }
+    },
+    {
+      "order": 6,
+      "slug": "narsinghpur",
+      "name": "Narsinghpur",
+      "app_name": null,
+      "in_app": false,
+      "ulb_type": "Nagar Palika Parishad",
+      "district": "Narsinghpur",
+      "subtitle": "Narsinghpur Nagar Palika Parishad · Narsinghpur district",
+      "intro": "Narsinghpur is a Nagar Palika Parishad of 28 wards with about 1.05 lakh residents, 19 km from the Narmada and 250 km from Bhopal. It draws water from the Narmada through a 13.10 MLD WTP, and a KfW-funded sewerage project with a 9.00 MLD STP and 123 km of sewers is under construction.",
+      "profile": {
+        "area_ha": 1400,
+        "wards": 28,
+        "population": 105000,
+        "distance_from_narmada": "19 km",
+        "distance_from_bhopal": "250 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Narsingh temple and Ganesh temple"
+      },
+      "photo": "photos/narsinghpur.jpg",
+      "photo_caption": "Narsingh temple, Narsinghpur",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 13.10 MLD",
+        "storage_pumping": "5 overhead tanks",
+        "network": "120 km distribution",
+        "house_connections": "7,500"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹135.67 crore (incl. 10-year O&M)",
+        "funding": "KfW (German development bank)",
+        "water_source": "—",
+        "treatment_plant": "STP 9.00 MLD",
+        "storage_pumping": "6 pumping stations",
+        "network": "123 km sewer",
+        "house_connections": "15,000"
+      },
+      "wtp_mld": 13.1,
+      "stp_mld": 9,
+      "future_plans": [
+        "Park, night shelter (rain basera), roads, buildings and other construction",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [
+        "At 108 lpcd, 1,05,000 people generate about 11.3 MLD, more than the 9.00 MLD STP under construction. Confirm the population year and the STP’s design population."
+      ],
+      "expected_computed": {
+        "sewage_mld": 11.34,
+        "stp_capacity_pct": 79,
+        "wtp_lpcd": 125
+      }
+    },
+    {
+      "order": 7,
+      "slug": "sainkheda",
+      "name": "Sainkheda",
+      "app_name": null,
+      "in_app": false,
+      "ulb_type": "Nagar Parishad",
+      "district": "Narsinghpur",
+      "subtitle": "Sainkheda Nagar Parishad · Narsinghpur district",
+      "intro": "Sainkheda, known for the residence and temple of Dadaji Dhuniwale, is a Nagar Parishad of 15 wards in Narsinghpur district, 9 km from the Narmada, with 9,602 residents. ADB-funded water supply (3.0 MLD WTP) and sewerage (2.60 MLD STP, 29 km of sewers) projects are both under construction.",
+      "profile": {
+        "area_ha": 255,
+        "wards": 15,
+        "population": 9602,
+        "distance_from_narmada": "9 km",
+        "distance_from_bhopal": "170 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Residence and temple of Dadaji Dhuniwale"
+      },
+      "photo": "photos/sainkheda.jpg",
+      "photo_caption": "Dadaji temple, Sainkheda",
+      "water_supply": {
+        "status": "Under construction",
+        "cost": "₹71.52 crore (incl. 10-year O&M)",
+        "funding": "Asian Development Bank",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 3.0 MLD",
+        "storage_pumping": "4 overhead tanks",
+        "network": "33.217 km distribution",
+        "house_connections": "2,478"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹33.74 crore (incl. 10-year O&M)",
+        "funding": "Asian Development Bank",
+        "water_source": "—",
+        "treatment_plant": "STP 2.60 MLD",
+        "storage_pumping": "2 pumping stations",
+        "network": "29 km sewer",
+        "house_connections": "2,478"
+      },
+      "wtp_mld": 3,
+      "stp_mld": 2.6,
+      "future_plans": [
+        "Nagar Parishad office building",
+        "Bus stand",
+        "Roads, buildings and other construction",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [
+        "The water supply cost (₹71.52 crore for 9,602 people) is high next to similar towns, for example Nemawar at ₹21.03 crore. Confirm the scope of the scheme."
+      ],
+      "expected_computed": {
+        "sewage_mld": 1.04,
+        "stp_capacity_pct": 251,
+        "wtp_lpcd": 312
+      }
+    },
+    {
+      "order": 8,
+      "slug": "narmadapuram",
+      "name": "Narmadapuram",
+      "app_name": "Narmadapuram",
+      "in_app": true,
+      "ulb_type": "Nagar Palika Parishad",
+      "district": "Narmadapuram",
+      "subtitle": "Narmadapuram Nagar Palika Parishad · Narmadapuram district",
+      "intro": "Narmadapuram (formerly Hoshangabad) is a Nagar Palika Parishad of 33 wards on the Narmada, 77 km from Bhopal, with 1,17,988 residents (Census 2011). A 24 MLD WTP supplies the town, and a KfW-funded sewerage project with a 21 MLD STP, 144 km of sewers and 5 pumping stations is under construction.",
+      "profile": {
+        "area_ha": 2600,
+        "wards": 33,
+        "population": 117988,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "77.4 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Sethani Ghat"
+      },
+      "photo": "photos/narmadapuram.jpg",
+      "photo_caption": "Sethani Ghat, Narmadapuram",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 24 MLD",
+        "storage_pumping": "12 overhead tanks",
+        "network": "225 km distribution",
+        "house_connections": "24,000"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹159.40 crore (incl. 10-year O&M)",
+        "funding": "KfW (German development bank)",
+        "water_source": "—",
+        "treatment_plant": "STP 21 MLD",
+        "storage_pumping": "5 pumping stations",
+        "network": "144.086 km sewer",
+        "house_connections": "30,350 (printed “3,0350”)"
+      },
+      "wtp_mld": 24,
+      "stp_mld": 21,
+      "future_plans": [
+        "Upgrading the Raj Ghat cremation ground",
+        "Narmadalok corridor",
+        "Water supply project under AMRUT 2.0",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [
+        "House connections are printed as “3,0350”; read here as 30,350.",
+        "The DRMP STP plan lists the plant under construction as “Existing STP U/C” at 2.5 MLD; this source gives 21 MLD, which alone exceeds the 2050 sewage estimate of about 19 MLD. Reconcile before the STP analysis is added."
+      ],
+      "expected_computed": {
+        "sewage_mld": 12.74,
+        "stp_capacity_pct": 165,
+        "wtp_lpcd": 203
+      }
+    },
+    {
+      "order": 9,
+      "slug": "budni",
+      "name": "Budni",
+      "app_name": "Budni",
+      "in_app": true,
+      "ulb_type": "Nagar Parishad",
+      "district": "Sehore",
+      "subtitle": "Budni Nagar Parishad · Sehore district",
+      "intro": "Budni is a Nagar Parishad of 15 wards on the Narmada in Sehore district, 76 km from Bhopal, with 16,808 residents. A 4.50 MLD WTP supplies the town, and its sewerage system (3.28 MLD STP, 32 km of sewers, 7 pumping stations) is complete.",
+      "profile": {
+        "area_ha": 759.07,
+        "wards": 15,
+        "population": 16808,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "76 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Ghats on the Narmada"
+      },
+      "photo": "photos/budni.jpg",
+      "photo_caption": "Budni ghat",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 4.50 MLD",
+        "storage_pumping": "6 overhead tanks",
+        "network": "40 km distribution",
+        "house_connections": "1,756"
+      },
+      "sewerage": {
+        "status": "Completed (per UDHD Minister’s note)",
+        "cost": "Not given",
+        "funding": "State special fund (per UDHD Minister’s note)",
+        "water_source": "—",
+        "treatment_plant": "STP 3.28 MLD",
+        "storage_pumping": "7 pumping stations",
+        "network": "32 km sewer",
+        "house_connections": "2,804"
+      },
+      "wtp_mld": 4.5,
+      "stp_mld": 3.28,
+      "future_plans": [
+        "Sports complex, convention centre, ghat construction, park development, roads and other infrastructure",
+        "Community halls and public amenities"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 1.82,
+        "stp_capacity_pct": 181,
+        "wtp_lpcd": 268
+      }
+    },
+    {
+      "order": 10,
+      "slug": "bherunda-nasrullaganj",
+      "name": "Bherunda (Nasrullaganj)",
+      "app_name": "Nasrullaganj",
+      "in_app": true,
+      "ulb_type": "Nagar Parishad",
+      "district": "Sehore",
+      "subtitle": "Bherunda Nagar Parishad · Sehore district",
+      "intro": "Bherunda (Nasrullaganj) is a Nagar Parishad of 15 wards in Sehore district, 9 km from the Narmada and 90 km from Bhopal, with 23,788 residents. A water supply scheme and a World Bank-funded sewerage project (4.2 MLD STP, 47 km of sewers) are under construction.",
+      "profile": {
+        "area_ha": 500,
+        "wards": 15,
+        "population": 23788,
+        "distance_from_narmada": "9 km",
+        "distance_from_bhopal": "90 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Salkanpur Mata temple"
+      },
+      "photo": "photos/bherunda-nasrullaganj.jpg",
+      "photo_caption": "Salkanpur Devidham",
+      "water_supply": {
+        "status": "Under construction",
+        "cost": "₹8.00 crore (incl. 10-year O&M)",
+        "funding": "State financial assistance",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 13.68 MLD",
+        "storage_pumping": "6 overhead tanks",
+        "network": "196 km distribution",
+        "house_connections": "6,326"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹38.59 crore (incl. 10-year O&M)",
+        "funding": "World Bank",
+        "water_source": "—",
+        "treatment_plant": "STP 4.2 MLD",
+        "storage_pumping": "1 pumping station",
+        "network": "47 km sewer",
+        "house_connections": "4,274"
+      },
+      "wtp_mld": 13.68,
+      "stp_mld": 4.2,
+      "future_plans": [
+        "Auditorium",
+        "Playground",
+        "Park development",
+        "Upgrading Semalpani road",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [
+        "A 13.68 MLD WTP and 196 km of mains for 23,788 people (about 575 litres per person per day) are large for the town, and ₹8.00 crore is low for that scale. Confirm the figures."
+      ],
+      "expected_computed": {
+        "sewage_mld": 2.57,
+        "stp_capacity_pct": 163,
+        "wtp_lpcd": 575
+      }
+    },
+    {
+      "order": 11,
+      "slug": "nemawar",
+      "name": "Nemawar",
+      "app_name": "Nemawar",
+      "in_app": true,
+      "ulb_type": "Nagar Parishad",
+      "district": "Dewas",
+      "subtitle": "Nemawar Nagar Parishad · Dewas district",
+      "intro": "Nemawar is a Nagar Parishad of 15 wards on the Narmada in Dewas district, 135 km from Bhopal, with 5,975 residents. Water supply (2.21 MLD WTP) and sewerage (1.0 MLD STP, 13.68 km of sewers) projects are both under construction.",
+      "profile": {
+        "area_ha": 800,
+        "wards": 15,
+        "population": 5975,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "135 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Narmada river ghat"
+      },
+      "photo": "photos/nemawar.jpg",
+      "photo_caption": "Narmada ghat, Nemawar",
+      "water_supply": {
+        "status": "Under construction",
+        "cost": "₹21.03 crore (incl. 10-year O&M)",
+        "funding": "ADB-assisted",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 2.21 MLD",
+        "storage_pumping": "2 overhead tanks",
+        "network": "45.33 km distribution",
+        "house_connections": "1,198"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹14.92 crore (incl. 10-year O&M)",
+        "funding": "State government (special fund)",
+        "water_source": "—",
+        "treatment_plant": "STP 1.0 MLD",
+        "storage_pumping": "3 pumping stations",
+        "network": "13.68 km sewer",
+        "house_connections": "1,800"
+      },
+      "wtp_mld": 2.21,
+      "stp_mld": 1,
+      "future_plans": [
+        "Park development, roads and other infrastructure",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 0.65,
+        "stp_capacity_pct": 155,
+        "wtp_lpcd": 370
+      }
+    },
+    {
+      "order": 12,
+      "slug": "omkareshwar",
+      "name": "Omkareshwar",
+      "app_name": "Omkareshwar",
+      "in_app": true,
+      "ulb_type": "Nagar Parishad",
+      "district": "Khargone",
+      "subtitle": "Omkareshwar Nagar Parishad · Khargone district",
+      "intro": "Omkareshwar, the Jyotirlinga temple town on the Narmada, is a Nagar Parishad of 15 wards with 10,063 residents and a large number of pilgrims. A 5.62 MLD WTP supplies the town, and a sewerage project with a 2.65 MLD STP and 12.78 km of sewers is under construction.",
+      "profile": {
+        "area_ha": 260,
+        "wards": 15,
+        "population": 10063,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "270 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Omkareshwar Mahadev temple"
+      },
+      "photo": "photos/omkareshwar.jpg",
+      "photo_caption": "Omkareshwar Mahadev temple",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 5.62 MLD",
+        "storage_pumping": "5 overhead tanks",
+        "network": "23 km distribution",
+        "house_connections": "1,400"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹16.30 crore (incl. 10-year O&M)",
+        "funding": "State government (special fund)",
+        "water_source": "—",
+        "treatment_plant": "STP 2.65 MLD",
+        "storage_pumping": "4 pumping stations",
+        "network": "12.78 km sewer",
+        "house_connections": "2,400"
+      },
+      "wtp_mld": 5.62,
+      "stp_mld": 2.65,
+      "future_plans": [
+        "Park development, roads and other infrastructure",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [
+        "District is printed as Khargone; Omkareshwar Nagar Parishad is in Khandwa district."
+      ],
+      "expected_computed": {
+        "sewage_mld": 1.09,
+        "stp_capacity_pct": 244,
+        "wtp_lpcd": 558
+      }
+    },
+    {
+      "order": 13,
+      "slug": "barwaha",
+      "name": "Barwaha",
+      "app_name": "Barwaha",
+      "in_app": true,
+      "ulb_type": "Nagar Palika Parishad",
+      "district": "Khargone",
+      "subtitle": "Barwaha Nagar Palika Parishad · Khargone district",
+      "intro": "Barwaha is a Nagar Palika Parishad of 15 wards on the Narmada in Khargone district, 248 km from Bhopal, with 26,459 residents. A water supply scheme (4.0 MLD WTP) and an ADB-funded sewerage project (3.75 MLD STP, 29 km of sewers) are under construction.",
+      "profile": {
+        "area_ha": 1700,
+        "wards": 15,
+        "population": 26459,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "248 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Dariya Mahal; CISF Regional Training Centre"
+      },
+      "photo": "photos/barwaha.jpg",
+      "photo_caption": "CISF Regional Training Centre, Barwaha",
+      "water_supply": {
+        "status": "Under construction",
+        "cost": "₹20.15 crore (incl. 5-year O&M)",
+        "funding": "UIDSSMT",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 4.0 MLD",
+        "storage_pumping": "4 overhead tanks",
+        "network": "50 km distribution",
+        "house_connections": "5,082"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹27.61 crore (incl. 10-year O&M)",
+        "funding": "Asian Development Bank",
+        "water_source": "—",
+        "treatment_plant": "STP 3.75 MLD",
+        "storage_pumping": "2 pumping stations",
+        "network": "29 km sewer",
+        "house_connections": "5,082"
+      },
+      "wtp_mld": 4,
+      "stp_mld": 3.75,
+      "future_plans": [
+        "New Nagar Parishad office building",
+        "Bus stand",
+        "Roads and other infrastructure",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 2.86,
+        "stp_capacity_pct": 131,
+        "wtp_lpcd": 151
+      }
+    },
+    {
+      "order": 14,
+      "slug": "sanawad",
+      "name": "Sanawad",
+      "app_name": null,
+      "in_app": false,
+      "ulb_type": "Nagar Palika Parishad",
+      "district": "Khargone",
+      "subtitle": "Sanawad Nagar Palika Parishad · Khargone district",
+      "intro": "Sanawad is a Nagar Palika Parishad of 18 wards in Khargone district, 5 km from the Narmada, with 38,740 residents. A 7.50 MLD WTP supplies the town, and an ADB-funded sewerage project (7.02 MLD STP, 68.77 km of sewers) is under construction.",
+      "profile": {
+        "area_ha": 1500,
+        "wards": 18,
+        "population": 38740,
+        "distance_from_narmada": "5 km",
+        "distance_from_bhopal": "260 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Sheetla Mata fair"
+      },
+      "photo": "photos/sanawad.jpg",
+      "photo_caption": "Narmada bank, Sanawad (caption as in source)",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 7.50 MLD",
+        "storage_pumping": "4 overhead tanks",
+        "network": "55 km distribution",
+        "house_connections": "8,000"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹43.95 crore (incl. 10-year O&M)",
+        "funding": "Asian Development Bank",
+        "water_source": "—",
+        "treatment_plant": "STP 7.02 MLD",
+        "storage_pumping": "2 pumping stations",
+        "network": "68.77 km sewer",
+        "house_connections": "8,257"
+      },
+      "wtp_mld": 7.5,
+      "stp_mld": 7.02,
+      "future_plans": [
+        "Upgrading the water supply scheme",
+        "Renovating the town’s main drains",
+        "Parks and main roads (Kayakalp)",
+        "Night shelter, old-age home and fire station",
+        "Retaining wall, culvert, road and ghats on the Bakud river bank; community hall and amenities",
+        "Sports complex for youth"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 4.18,
+        "stp_capacity_pct": 168,
+        "wtp_lpcd": 194
+      }
+    },
+    {
+      "order": 15,
+      "slug": "mandleshwar",
+      "name": "Mandleshwar",
+      "app_name": "Mandleshwar",
+      "in_app": true,
+      "ulb_type": "Nagar Parishad",
+      "district": "Khargone",
+      "subtitle": "Mandleshwar Nagar Parishad · Khargone district",
+      "intro": "Mandleshwar, an ancient religious town on the Narmada, is a Nagar Parishad of 15 wards in Khargone district with 12,346 residents. A 3.74 MLD WTP supplies the town, and a sewerage project with a 3.0 MLD STP and 18.92 km of sewers is under construction.",
+      "profile": {
+        "area_ha": 800,
+        "wards": 15,
+        "population": 12346,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "278 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Ancient religious town"
+      },
+      "photo": "photos/mandleshwar.jpg",
+      "photo_caption": "Mandleshwar ghats",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 3.74 MLD",
+        "storage_pumping": "2 overhead tanks",
+        "network": "22 km distribution",
+        "house_connections": "3,340"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹14.75 crore (incl. 10-year O&M)",
+        "funding": "State government (special fund)",
+        "water_source": "—",
+        "treatment_plant": "STP 3.0 MLD",
+        "storage_pumping": "3 pumping stations",
+        "network": "18.92 km sewer",
+        "house_connections": "2,460"
+      },
+      "wtp_mld": 3.74,
+      "stp_mld": 3,
+      "future_plans": [
+        "Extension of the water supply scheme, park development, roads and other infrastructure",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 1.33,
+        "stp_capacity_pct": 225,
+        "wtp_lpcd": 303
+      }
+    },
+    {
+      "order": 16,
+      "slug": "maheshwar",
+      "name": "Maheshwar",
+      "app_name": "Maheshwar",
+      "in_app": true,
+      "ulb_type": "Nagar Parishad",
+      "district": "Khargone",
+      "subtitle": "Maheshwar Nagar Parishad · Khargone district",
+      "intro": "Maheshwar, known for its ghats, is a Nagar Parishad of 15 wards on the Narmada in Khargone district with 24,411 residents. A 6 MLD WTP supplies the town, and a World Bank-funded sewerage project (4.91 MLD STP, 32.92 km of sewers) is under construction.",
+      "profile": {
+        "area_ha": 600,
+        "wards": 15,
+        "population": 24411,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "276 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Maheshwar Ghat"
+      },
+      "photo": "photos/maheshwar.jpg",
+      "photo_caption": "Maheshwar Ghat",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 6 MLD",
+        "storage_pumping": "3 overhead tanks",
+        "network": "32 km distribution",
+        "house_connections": "5,400"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹53.82 crore (incl. 10-year O&M)",
+        "funding": "World Bank",
+        "water_source": "—",
+        "treatment_plant": "STP 4.91 MLD",
+        "storage_pumping": "1 pumping station",
+        "network": "32.92 km sewer",
+        "house_connections": "4,577"
+      },
+      "wtp_mld": 6,
+      "stp_mld": 4.91,
+      "future_plans": [
+        "Bus stand extension and shelter",
+        "Dharamshala and park beautification",
+        "Extension of the water supply scheme",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 2.64,
+        "stp_capacity_pct": 186,
+        "wtp_lpcd": 246
+      }
+    },
+    {
+      "order": 17,
+      "slug": "dhamnod",
+      "name": "Dhamnod",
+      "app_name": "Dhamnod",
+      "in_app": true,
+      "ulb_type": "Nagar Palika Parishad",
+      "district": "Dhar",
+      "subtitle": "Dhamnod Nagar Palika Parishad · Dhar district",
+      "intro": "Dhamnod is a Nagar Palika Parishad in Dhar district, 8 km from the Narmada and 231 km from Bhopal, with 32,098 residents. Its water supply project (5.10 MLD WTP) is 89% complete, and an ADB-funded sewerage project (6.68 MLD STP, 80.67 km of sewers) is 25% complete.",
+      "profile": {
+        "area_ha": 1374,
+        "wards": null,
+        "population": 32098,
+        "distance_from_narmada": "8 km",
+        "distance_from_bhopal": "231 km",
+        "last_row_label": "Location",
+        "last_row_value": "Near Maheshwar (12 km), Khalghat (7 km), Dharampuri (20 km) and Manawar (50 km); 46 km from district headquarters"
+      },
+      "photo": "photos/dhamnod.jpg",
+      "photo_caption": "Narmada ghat near Dhamnod",
+      "water_supply": {
+        "status": "Existing (89.00% physical progress)",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Not given",
+        "treatment_plant": "WTP 5.10 MLD",
+        "storage_pumping": "2 overhead tanks",
+        "network": "79 km distribution",
+        "house_connections": "6,417"
+      },
+      "sewerage": {
+        "status": "Under construction (25.20% physical progress)",
+        "cost": "₹81.42 crore (incl. O&M)",
+        "funding": "Asian Development Bank",
+        "water_source": "—",
+        "treatment_plant": "STP 6.68 MLD",
+        "storage_pumping": "Not given",
+        "network": "80.67 km sewer",
+        "house_connections": "6,500"
+      },
+      "wtp_mld": 5.1,
+      "stp_mld": 6.68,
+      "future_plans": [
+        "Development works worth ₹304.84 lakh under phase 4 of the Mukhyamantri Infrastructure Development Scheme",
+        "Roads worth ₹240.00 lakh under Kayakalp",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [
+        "Number of wards and the water source are not given.",
+        "The future-plan amount is printed as “₹304.84 lakh crore”; read here as ₹304.84 lakh."
+      ],
+      "expected_computed": {
+        "sewage_mld": 3.47,
+        "stp_capacity_pct": 193,
+        "wtp_lpcd": 159
+      }
+    },
+    {
+      "order": 18,
+      "slug": "dharampuri",
+      "name": "Dharampuri",
+      "app_name": "Dharampuri",
+      "in_app": true,
+      "ulb_type": "Nagar Parishad",
+      "district": "Dhar",
+      "subtitle": "Dharampuri Nagar Parishad · Dhar district",
+      "intro": "Dharampuri is a Nagar Parishad of 15 wards on the Narmada in Dhar district with 16,363 residents. A 3.4 MLD WTP supplies the town, and its sewerage system (2 MLD STP, 19.27 km of sewers, 3 pumping stations) is complete.",
+      "profile": {
+        "area_ha": 1200,
+        "wards": 15,
+        "population": 16363,
+        "distance_from_narmada": "On the river bank",
+        "distance_from_bhopal": "290 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Gadkalika temple"
+      },
+      "photo": "photos/dharampuri.jpg",
+      "photo_caption": "Gadkalika temple, Dharampuri",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 3.4 MLD",
+        "storage_pumping": "5 overhead tanks",
+        "network": "46 km distribution",
+        "house_connections": "3,300"
+      },
+      "sewerage": {
+        "status": "Completed (per UDHD Minister’s note)",
+        "cost": "Not given",
+        "funding": "World Bank (per UDHD Minister’s note)",
+        "water_source": "—",
+        "treatment_plant": "STP 2 MLD",
+        "storage_pumping": "3 pumping stations",
+        "network": "19.27 km sewer",
+        "house_connections": "2,300"
+      },
+      "wtp_mld": 3.4,
+      "stp_mld": 2,
+      "future_plans": [
+        "Shelter and dharamshala",
+        "Park beautification",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 1.77,
+        "stp_capacity_pct": 113,
+        "wtp_lpcd": 208
+      }
+    },
+    {
+      "order": 19,
+      "slug": "anjad",
+      "name": "Anjad",
+      "app_name": null,
+      "in_app": false,
+      "ulb_type": "Nagar Parishad",
+      "district": "Khargone",
+      "subtitle": "Anjad Nagar Parishad · Khargone district",
+      "intro": "Anjad is a Nagar Parishad of 15 wards, 5 km from the Narmada, with 26,289 residents. A 4.0 MLD WTP supplies the town, and an ADB-funded sewerage project (3.66 MLD STP, 32.60 km of sewers) is under construction.",
+      "profile": {
+        "area_ha": 1500,
+        "wards": 15,
+        "population": 26289,
+        "distance_from_narmada": "5 km",
+        "distance_from_bhopal": "351 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Nagri Mata temple"
+      },
+      "photo": "photos/anjad.jpg",
+      "photo_caption": "Nagri Mata temple, Anjad",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 4.0 MLD",
+        "storage_pumping": "3 overhead tanks",
+        "network": "28.5 km distribution",
+        "house_connections": "5,000"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹30.56 crore (incl. 10-year O&M)",
+        "funding": "Asian Development Bank",
+        "water_source": "—",
+        "treatment_plant": "STP 3.66 MLD",
+        "storage_pumping": "2 pumping stations",
+        "network": "32.60 km sewer",
+        "house_connections": "5,488"
+      },
+      "wtp_mld": 4,
+      "stp_mld": 3.66,
+      "future_plans": [
+        "Roads, buildings and other construction",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [
+        "District is printed as Khargone; Anjad is in Barwani district."
+      ],
+      "expected_computed": {
+        "sewage_mld": 2.84,
+        "stp_capacity_pct": 129,
+        "wtp_lpcd": 152
+      }
+    },
+    {
+      "order": 20,
+      "slug": "barwani",
+      "name": "Barwani",
+      "app_name": "Barwani",
+      "in_app": true,
+      "ulb_type": "Nagar Palika Parishad",
+      "district": "Barwani",
+      "subtitle": "Barwani Nagar Palika Parishad · Barwani district",
+      "intro": "Barwani is a Nagar Palika Parishad of 24 wards, 5 km from the Narmada, with 55,504 residents. A 12 MLD WTP supplies the town, and a KfW-funded sewerage project (9 MLD STP, 128.87 km of sewers) is under construction.",
+      "profile": {
+        "area_ha": 2700,
+        "wards": 24,
+        "population": 55504,
+        "distance_from_narmada": "5 km",
+        "distance_from_bhopal": "347.8 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Hanuman Tekri"
+      },
+      "photo": "photos/barwani.jpg",
+      "photo_caption": "Hanuman Tekri, Barwani",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Narmada River",
+        "treatment_plant": "WTP 12 MLD",
+        "storage_pumping": "12 overhead tanks",
+        "network": "150 km distribution",
+        "house_connections": "11,232"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹108.40 crore (incl. 10-year O&M)",
+        "funding": "KfW (German development bank)",
+        "water_source": "—",
+        "treatment_plant": "STP 9 MLD",
+        "storage_pumping": "3 pumping stations",
+        "network": "128.87 km sewer",
+        "house_connections": "10,380"
+      },
+      "wtp_mld": 12,
+      "stp_mld": 9,
+      "future_plans": [
+        "Night shelter, shelter and other infrastructure",
+        "Upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 5.99,
+        "stp_capacity_pct": 150,
+        "wtp_lpcd": 216
+      }
+    },
+    {
+      "order": 21,
+      "slug": "sendhwa",
+      "name": "Sendhwa",
+      "app_name": null,
+      "in_app": false,
+      "ulb_type": "Nagar Parishad",
+      "district": "Barwani",
+      "subtitle": "Sendhwa Nagar Parishad · Barwani district",
+      "intro": "Sendhwa, 55 km from the Narmada in Barwani district, has 24 wards and 56,485 residents and draws its water from the Goi river. A KfW-funded sewerage project (9 MLD STP, 91.25 km of sewers) is under construction.",
+      "profile": {
+        "area_ha": 1900,
+        "wards": 24,
+        "population": 56485,
+        "distance_from_narmada": "55 km",
+        "distance_from_bhopal": "350.6 km",
+        "last_row_label": "Known for",
+        "last_row_value": "Sendhwa fort"
+      },
+      "photo": "photos/sendhwa.jpg",
+      "photo_caption": "Sendhwa fort",
+      "water_supply": {
+        "status": "Existing",
+        "cost": "Not given",
+        "funding": "Not given",
+        "water_source": "Goi River",
+        "treatment_plant": "WTP 12 MLD",
+        "storage_pumping": "4 overhead tanks",
+        "network": "48 km distribution",
+        "house_connections": "10,500"
+      },
+      "sewerage": {
+        "status": "Under construction",
+        "cost": "₹84.52 crore (incl. 10-year O&M)",
+        "funding": "KfW (German development bank)",
+        "water_source": "—",
+        "treatment_plant": "STP 9 MLD",
+        "storage_pumping": "2 pumping stations",
+        "network": "91.25 km sewer",
+        "house_connections": "12,000"
+      },
+      "wtp_mld": 12,
+      "stp_mld": 9,
+      "future_plans": [
+        "Renovation of Rajrajeshwar talab and a park under AMRUT 2.0",
+        "Ralawati intake well and pipeline project under AMRUT 2.0",
+        "Water park; upgrading and building ghats, community halls and public amenities"
+      ],
+      "data_checks": [],
+      "expected_computed": {
+        "sewage_mld": 6.1,
+        "stp_capacity_pct": 148,
+        "wtp_lpcd": 212
+      }
+    }
+  ]
+}
